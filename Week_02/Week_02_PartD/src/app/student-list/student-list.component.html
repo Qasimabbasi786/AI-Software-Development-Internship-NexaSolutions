@@ -1,0 +1,27 @@
+<div class="container">
+  <div class="header-section">
+    <h2>Student Directory</h2>
+    <p>Manage and view all registered students in the system.</p>
+  </div>
+
+  <div class="table-card">
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Student Name</th>
+          <th>Email Address</th>
+          <th>Department</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let student of students$ | async">
+          <td><span class="badge">#{{ student.id }}</span></td>
+          <td><strong>{{ student.name }}</strong></td>
+          <td>{{ student.email }}</td>
+          <td><span class="dept-tag">{{ student.department }}</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

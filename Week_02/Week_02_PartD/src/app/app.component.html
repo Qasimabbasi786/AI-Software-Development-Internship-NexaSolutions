@@ -1,0 +1,17 @@
+<div class="app-layout">
+  <!-- Modern Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      🎓 <span>Student Portal</span>
+    </div>
+    <div class="nav-links">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Student List</a>
+      <a routerLink="/register" routerLinkActive="active">Register Student</a>
+    </div>
+  </nav>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

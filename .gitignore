@@ -1,0 +1,70 @@
+# ==============================================================================
+# Master .gitignore for Nexa Solutions AI Software Development Internship
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. .NET & C# Build Artifacts
+# ------------------------------------------------------------------------------
+**/bin/
+**/obj/
+**/out/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.pidb
+*.booproj
+.vs/
+_ReSharper*/
+
+# ------------------------------------------------------------------------------
+# 2. Node.js & Angular Frontend
+# ------------------------------------------------------------------------------
+**/node_modules/
+**/dist/
+.angular/
+.npm/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ------------------------------------------------------------------------------
+# 3. Python & AI Scripting Environments
+# ------------------------------------------------------------------------------
+**/__pycache__/
+*.py[cod]
+*$py.class
+**/.venv/
+**/venv/
+**/ENV/
+**/env/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ------------------------------------------------------------------------------
+# 4. Environment Variables, Secrets & Local Overrides
+# ------------------------------------------------------------------------------
+**/.env
+**/.env.*
+!**/.env.example
+**/appsettings.Development.json
+**/appsettings.Local.json
+*.pfx
+*.certificate
+
+# ------------------------------------------------------------------------------
+# 5. IDE, Editor & OS Specific Files
+# ------------------------------------------------------------------------------
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini

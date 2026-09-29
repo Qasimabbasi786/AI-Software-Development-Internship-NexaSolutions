@@ -1,0 +1,71 @@
+<div class="app-container">
+  <header class="app-header">
+    <h1>Welcome, {{ userName }}!</h1>
+    <p class="subtitle">{{ internshipTitle }}</p>
+  </header>
+
+  <main class="content-layout">
+    <!-- Student Table Section -->
+    <section class="table-section glass-panel">
+      <h2>Internship Roster</h2>
+      <div class="table-responsive">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Department</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let student of students" 
+                [class.active-row]="selectedStudent?.id === student.id">
+              <td>#{{ student.id }}</td>
+              <td>{{ student.name }}</td>
+              <td><span class="badge">{{ student.department }}</span></td>
+              <td>
+                <button class="btn-primary" (click)="selectStudent(student)">
+                  View Details
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Student Details Section -->
+    <section class="details-section glass-panel">
+      <h2>Student Details</h2>
+      
+      <div *ngIf="selectedStudent; else noSelection" class="student-profile fade-in">
+        <div class="profile-header">
+          <img [src]="selectedStudent.imageUrl" [alt]="selectedStudent.name" class="avatar" />
+          <div class="profile-title">
+            <h3>{{ selectedStudent.name }}</h3>
+            <p class="email">{{ selectedStudent.email }}</p>
+          </div>
+        </div>
+        
+        <div class="profile-stats">
+          <div class="stat-box">
+            <span class="stat-label">Department</span>
+            <span class="stat-value">{{ selectedStudent.department }}</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Grade</span>
+            <span class="stat-value grade-badge">{{ selectedStudent.grade }}</span>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noSelection>
+        <div class="empty-state">
+          <div class="empty-icon">👈</div>
+          <p>Please select a student from the table to view their details.</p>
+        </div>
+      </ng-template>
+    </section>
+  </main>
+</div>

@@ -1,0 +1,38 @@
+<div class="form-container">
+  <div class="form-card">
+    <h2>Register New Student</h2>
+    <p>Fill out the details below to add a student to the database.</p>
+
+    <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+      
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input id="name" type="text" formControlName="name" placeholder="Enter student name">
+        <div *ngIf="registrationForm.get('name')?.invalid && registrationForm.get('name')?.touched" class="error-msg">
+          Name is required and must be at least 3 characters.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input id="email" type="email" formControlName="email" placeholder="student@example.com">
+        <div *ngIf="registrationForm.get('email')?.invalid && registrationForm.get('email')?.touched" class="error-msg">
+          A valid email address is required.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="department">Department</label>
+        <input id="department" type="text" formControlName="department" placeholder="e.g. Computer Science">
+        <div *ngIf="registrationForm.get('department')?.invalid && registrationForm.get('department')?.touched" class="error-msg">
+          Department field is required.
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="registrationForm.invalid" class="submit-btn">
+        Register Student
+      </button>
+
+    </form>
+  </div>
+</div>

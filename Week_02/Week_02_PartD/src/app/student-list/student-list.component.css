@@ -1,0 +1,72 @@
+.container {
+  padding: 30px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.header-section {
+  margin-bottom: 20px;
+}
+
+.header-section h2 {
+  font-size: 24px;
+  color: #2c3e50;
+  margin-bottom: 5px;
+}
+
+.header-section p {
+  color: #7f8c8d;
+  font-size: 14px;
+}
+
+.table-card {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  border: 1px solid #e1e8ed;
+}
+
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.styled-table th {
+  background-color: #f8f9fa;
+  color: #2c3e50;
+  padding: 15px 20px;
+  font-weight: 600;
+  border-bottom: 2px solid #e1e8ed;
+}
+
+.styled-table td {
+  padding: 15px 20px;
+  border-bottom: 1px solid #e1e8ed;
+  color: #4f5d73;
+}
+
+.styled-table tbody tr:hover {
+  background-color: #f1f4f8;
+}
+
+.badge {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.dept-tag {
+  background: #e8f5e9;
+  color: #388e3c;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
