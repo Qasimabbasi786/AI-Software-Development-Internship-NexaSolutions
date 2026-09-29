@@ -1,0 +1,34 @@
+<div class="app-container">
+  
+  <header class="app-header">
+    <h1>Student Management Portal</h1>
+    <p class="subtitle">Advanced Angular Student Directory & Analytics</p>
+  </header>
+
+  <div class="search-wrapper">
+    <input
+      type="text"
+      placeholder="Search by name or department..."
+      [(ngModel)]="searchText"
+      class="neon-search-input"
+    />
+  </div>
+
+  <div class="content-layout">
+    <div class="glass-panel table-panel">
+      <h2>Student Records</h2>
+      <app-student-list 
+        [searchText]="searchText" 
+        (studentSelect)="onStudentSelect($event)">
+      </app-student-list>
+    </div>
+
+    <div class="glass-panel details-panel">
+      <h2>Profile Overview</h2>
+      <app-student-details 
+        [student]="selectedStudent">
+      </app-student-details>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,29 @@
+@if (student) {
+  <div class="student-profile fade-in">
+    <div class="profile-header">
+      <div class="initial-avatar">
+        {{ student.name.charAt(0) }}
+      </div>
+      <div class="profile-title">
+        <h3>{{ student.name }}</h3>
+        <p class="email">{{ student.name.toLowerCase().replace(' ', '') }}@example.com</p>
+      </div>
+    </div>
+
+    <div class="profile-stats">
+      <div class="stat-box">
+        <span class="stat-label">Department</span>
+        <span class="stat-value">{{ student.department }}</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-label">Grade</span>
+        <span class="stat-value grade-badge">{{ student.grade || 'A' }}</span>
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="empty-state">
+    <div class="empty-icon">👈</div>
+    <p>Select any student from the table to view detailed profile info.</p>
+  </div>
+}

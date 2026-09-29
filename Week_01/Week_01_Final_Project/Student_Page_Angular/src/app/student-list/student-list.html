@@ -1,0 +1,28 @@
+<div class="table-responsive">
+  <table class="modern-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Department</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (student of filteredStudents; track student.id) {
+        <tr (click)="selectStudent(student)" class="student-row">
+          <td>#{{ student.id }}</td>
+          <td class="name-col">{{ student.name }}</td>
+          <td>
+            <span class="badge">{{ student.department }}</span>
+          </td>
+          <td>
+            <button class="btn-primary" (click)="$event.stopPropagation(); selectStudent(student)">
+              View Details
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
