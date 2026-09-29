@@ -1,59 +1,62 @@
-# Student_Page_Angular
+# Week 1 Final Project - Student Management Portal (Angular Frontend)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.5.
+## 📌 Overview
+This component is an **Angular Single-Page Application (SPA)** providing an interactive web interface for managing student records. It showcases Angular component architecture, two-way data binding (`ngModel`), reactive forms, service layer abstraction, and responsive Bootstrap styling.
 
-## Development server
+---
 
-To start a local development server, run:
+## 🏗️ Architecture & Component Layout
 
-```bash
-ng serve
+```text
+Student_Page_Angular/
+├── package.json               # Angular dependencies & npm scripts
+├── angular.json               # Angular CLI configuration
+├── src/
+│   ├── main.ts                # Application entry point
+│   ├── index.html             # Base HTML template with Bootstrap 5
+│   └── app/
+│       ├── app.component.ts   # Root layout shell
+│       ├── models/
+│       │   └── student.model.ts # Student TypeScript interface
+│       ├── services/
+│       │   └── student.service.ts # State management & CRUD operations
+│       └── components/
+│           └── student-list/  # Student table, search filter, and add form
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### Key Technical Features
+- **Component Architecture**: Standalone component layout featuring modular UI separation.
+- **Data Binding**: Interactivity via property binding (`[ngClass]`, `[disabled]`), event binding (`(click)`, `(ngSubmit)`), and structural directives (`*ngFor`, `*ngIf`).
+- **Student Service**: Centralized RxJS / BehaviorSubject reactive state management for real-time list updates.
+- **Filtering & Search**: Dynamic client-side filtering by student name or major.
 
-## Code scaffolding
+---
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## 🚀 How to Run Locally
 
+### Prerequisites
+- Node.js (v18+ or v20+) and `npm` installed.
+
+### Execution Steps
+1. Open terminal and navigate to this folder:
+   ```bash
+   cd Week_01/Week_01_Final_Project/Student_Page_Angular
+   ```
+2. Install project dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the local development server:
+   ```bash
+   ng serve --open
+   # or: npm start
+   ```
+4. Access the web portal in your browser at `http://localhost:4200/`.
+
+---
+
+## 📢 Git Checkpoint
 ```bash
-ng generate component component-name
+git add .
+git commit -m "docs: add Angular student portal README"
 ```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
