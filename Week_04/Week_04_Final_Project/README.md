@@ -45,7 +45,7 @@ sequenceDiagram
 
 - **Backend API**: ASP.NET Core 8 Web API with JWT Bearer Authentication (`Microsoft.AspNetCore.Authentication.JwtBearer`), Entity Framework Core 8, PostgreSQL (`Npgsql`).
 - **Frontend SPA**: Angular 18/19 Standalone Components, Reactive Forms, `HttpInterceptorFn`, `CanActivateFn`.
-- **AI Microservice**: FastAPI, Uvicorn, Pydantic v2, Google Gemini API (`google-generativeai` with `gemini-1.5-flash`), and `.env` configuration.
+- **AI Microservice**: FastAPI, Uvicorn, Pydantic v2, Google Gemini API (`google-genai` SDK with `gemini-3.8-flash`), and `.env` configuration.
 - **Git Controls**: Pull request template (`.github/PULL_REQUEST_TEMPLATE.md`), branch protection rules on `main`.
 
 ---

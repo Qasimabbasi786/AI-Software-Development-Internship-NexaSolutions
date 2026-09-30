@@ -3,7 +3,7 @@
 
 Welcome to the AI Track module for the **Week 3 Final Project** in the **Nexa Solutions AI Software Development Internship Program**.
 
-This module introduces our first hands-on LLM scripting using **Google Gemini API** (`gemini-flash-latest`) and **Python 3.x**. It takes a book title and description, queries the Gemini model for a concise one-paragraph summary and literary genre suggestions, and outputs the result to the console.
+This module introduces our hands-on LLM scripting using the modern **Google GenAI SDK** (`google-genai` with `gemini-3.8-flash`) and **Python 3.x**. It takes a book title and description, queries the Gemini model for a concise one-paragraph summary and literary genre suggestions, and outputs the result to the console.
 
 ---
 
@@ -36,8 +36,8 @@ Wiring LLM calls directly into the .NET API before prompt engineering, structure
 
 ```
 ai-services/
-├── requirements.txt            # Python dependencies (google-generativeai, python-dotenv, Pillow)
-├── summarize_book.py           # Core execution script querying Gemini API
+├── requirements.txt            # Python dependencies (google-genai, python-dotenv, Pillow)
+├── summarize_book.py           # Core execution script querying Gemini API (gemini-3.8-flash)
 ├── .env.example                # Safe environment variable template
 ├── .env                        # Local secret key file (gitignored)
 └── README.md                   # Technical documentation and execution guide

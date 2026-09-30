@@ -38,22 +38,24 @@ def generate_book_summary(title: str, description: str):
         return
 
     try:
-        import google.generativeai as genai
+        from google import genai
 
-        genai.configure(api_key=gemini_api_key)
-        model = genai.GenerativeModel("gemini-flash-latest")
+        client = genai.Client(api_key=gemini_api_key)
 
         prompt = (
             f"You are an expert literature assistant. Please provide a concise one-paragraph summary "
             f"and suggest 3 relevant literary genres for the book titled '{title}' with description: '{description}'."
         )
 
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model="gemini-3.8-flash",
+            contents=prompt
+        )
         print("[*] Google Gemini AI Response:")
         print(response.text.strip())
         print("\n" + "=" * 65)
     except ImportError:
-        print("[!] Error: 'google-generativeai' package is not installed.")
+        print("[!] Error: 'google-genai' package is not installed.")
         print("    Run: pip install -r requirements.txt")
     except Exception as ex:
         print(f"[!] Error calling Google Gemini API: {ex}")

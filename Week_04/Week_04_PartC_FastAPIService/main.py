@@ -162,7 +162,7 @@ def health_check():
     return HealthCheckResponse(
         status="ok",
         service="Nexa Solutions Library AI Microservice",
-        provider="Google Gemini API (gemini-1.5-flash)",
+        provider="Google Gemini API (gemini-3.8-flash)",
         version="1.0.0",
         docs_url="/docs"
     )
@@ -180,10 +180,12 @@ def summarize_book(req: SummaryRequest):
 
     if gemini_key and not gemini_key.startswith("your_"):
         try:
-            import google.generativeai as genai
-            genai.configure(api_key=gemini_key)
-            model = genai.GenerativeModel("gemini-1.5-flash")
-            resp = model.generate_content(prompt)
+            from google import genai
+            client = genai.Client(api_key=gemini_key)
+            resp = client.models.generate_content(
+                model="gemini-3.8-flash",
+                contents=prompt
+            )
             raw_response = resp.text
         except Exception as ex:
             # Fallback defensively if API quota or connectivity fails

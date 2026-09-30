@@ -23,9 +23,9 @@ Week_04/
 │   └── README.md                    # In-depth guide for password hashing & JWT Bearer tokens
 ├── Week_04_PartB_AngularAuth/       # Angular Auth Integration (Service, Interceptor, Guards)
 │   └── README.md                    # In-depth guide for Angular security flow & UI role gating
-├── Week_04_PartC_FastAPIService/    # FastAPI AI Microservice (Google Gemini API)
+├── Week_04_PartC_FastAPIService/    # FastAPI AI Microservice (Google GenAI SDK)
 │   ├── main.py                      # FastAPI app with /health, /summarize, and /genre-suggestion
-│   ├── requirements.txt             # FastAPI, Uvicorn, Pydantic, google-generativeai
+│   ├── requirements.txt             # FastAPI, Uvicorn, Pydantic, google-genai
 │   ├── .env.example                 # Environment configuration template (GEMINI_API_KEY)
 │   └── README.md                    # Microservice setup & OpenAPI documentation
 ├── Week_04_PartD_LLMAPIs/           # Google Gemini API Deep-Dive

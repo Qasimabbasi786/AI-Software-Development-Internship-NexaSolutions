@@ -36,8 +36,8 @@ Wiring LLM calls directly into the .NET API before prompt engineering, structure
 
 ```
 ai-services/
-├── requirements.txt            # Python dependencies (google-generativeai, python-dotenv, Pillow)
-├── summarize_book.py           # Core execution script querying Gemini API
+├── requirements.txt            # Python dependencies (google-genai, python-dotenv, Pillow)
+├── summarize_book.py           # Core execution script querying Gemini API (gemini-3.8-flash)
 ├── .env.example                # Safe environment variable template
 ├── .env                        # Local secret key file (gitignored)
 └── README.md                   # Technical documentation and execution guide
