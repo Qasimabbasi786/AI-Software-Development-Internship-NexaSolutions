@@ -2,9 +2,8 @@
 Nexa Solutions - AI Software Development Internship
 Week 4 - Part D: Script 03 - Streaming Responses
 File: 03_streaming.py
-Description: Demonstrates chunk-by-chunk token streaming using Google Gemini API
-             to dramatically reduce perceived user latency compared to waiting
-             for complete responses.
+Description: Demonstrates chunk-by-chunk token streaming using the official modern
+             Google GenAI SDK (google-genai) to reduce perceived latency.
 """
 
 import os
@@ -22,7 +21,7 @@ load_dotenv(dotenv_path=env_path)
 
 def demonstrate_streaming():
     print("=" * 70)
-    print("  [Experiment 3] Google Gemini API - Real-Time Token Streaming")
+    print("  [Experiment 3] Google GenAI SDK - Real-Time Token Streaming")
     print("=" * 70)
 
     gemini_key = os.getenv("GEMINI_API_KEY")
@@ -36,22 +35,26 @@ def demonstrate_streaming():
 
     if gemini_key and not gemini_key.startswith("your_"):
         try:
-            import google.generativeai as genai
-            genai.configure(api_key=gemini_key)
-            model = genai.GenerativeModel("gemini-3.8-flash")
+            from google import genai
 
+            client = genai.Client(api_key=gemini_key)
             start_time = time.time()
-            response = model.generate_content(prompt, stream=True)
+
+            response_stream = client.models.generate_content_stream(
+                model="gemini-3.8-flash",
+                contents=prompt
+            )
 
             first_token_time = None
             total_chunks = 0
 
             print("Stream Output: ", end="", flush=True)
-            for chunk in response:
+            for chunk in response_stream:
                 if first_token_time is None:
                     first_token_time = time.time() - start_time
                 total_chunks += 1
-                print(chunk.text, end="", flush=True)
+                text_part = chunk.text if chunk.text else ""
+                print(text_part, end="", flush=True)
 
             total_duration = time.time() - start_time
             print("\n\n" + "-" * 70)

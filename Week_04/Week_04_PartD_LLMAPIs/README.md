@@ -17,7 +17,7 @@ This module implements four modular scripts covering:
 Week_04_PartD_LLMAPIs/
 ├── .env.example                 # Configuration template for GEMINI_API_KEY
 ├── .env                         # Local secret key file (git-ignored)
-├── requirements.txt             # Dependencies: google-generativeai, python-dotenv, pydantic
+├── requirements.txt             # Dependencies: google-genai, python-dotenv, pydantic
 ├── 01_model_parameters.py       # Experiment 1: Temperature & token budget controls
 ├── 02_conversation_history.py   # Experiment 2: Multi-turn chat session memory
 ├── 03_streaming.py              # Experiment 3: Server-side token streaming & TTFT metrics
@@ -39,7 +39,9 @@ Week_04_PartD_LLMAPIs/
 - **Stateless LLM Nature:** LLM endpoints have zero server-side memory between HTTP requests. Every call is completely independent.
 - **Context Preservation:** To maintain multi-turn context (e.g., remembering a user's favorite book mentioned in Turn 1 during a Turn 2 recommendation query), the entire message history array must be resent:
 ```python
-chat = model.start_chat(history=[])
+from google import genai
+client = genai.Client(api_key=gemini_key)
+chat = client.chats.create(model="gemini-3.8-flash")
 response1 = chat.send_message("My favorite book is The Pragmatic Programmer.")
 # In Turn 2, the chat session includes Turn 1 prompt & response in the request payload
 response2 = chat.send_message("Recommend 2 more books like that.")

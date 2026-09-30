@@ -4,7 +4,7 @@ Week 4 - Part D: Script 02 - Multi-turn Conversation History
 File: 02_conversation_history.py
 Description: Demonstrates how to maintain conversational context across stateless
              LLM requests by appending message turns to an explicit history array
-             and utilizing Google Gemini's chat session API.
+             and utilizing the official modern Google GenAI Client (google-genai).
 """
 
 import os
@@ -21,19 +21,17 @@ load_dotenv(dotenv_path=env_path)
 
 def demonstrate_chat_session():
     print("=" * 70)
-    print("  [Experiment 2] Google Gemini API - Multi-turn Conversation Memory")
+    print("  [Experiment 2] Google GenAI SDK - Multi-turn Conversation Memory")
     print("=" * 70)
 
     gemini_key = os.getenv("GEMINI_API_KEY")
 
     if gemini_key and not gemini_key.startswith("your_"):
         try:
-            import google.generativeai as genai
-            genai.configure(api_key=gemini_key)
-            model = genai.GenerativeModel("gemini-3.8-flash")
+            from google import genai
 
-            # Initialize continuous multi-turn chat session
-            chat = model.start_chat(history=[])
+            client = genai.Client(api_key=gemini_key)
+            chat = client.chats.create(model="gemini-3.8-flash")
 
             # -----------------------------------------------------------
             # Turn 1: User provides context and personal preference
@@ -46,7 +44,6 @@ def demonstrate_chat_session():
 
             # -----------------------------------------------------------
             # Turn 2: User asks contextual follow-up WITHOUT repeating preferences
-            # The model remembers Turn 1 because history was preserved!
             # -----------------------------------------------------------
             turn_2_msg = "Based on what I just told you, recommend 2 other books I would find valuable."
             print(f"User: {turn_2_msg}")
@@ -58,11 +55,15 @@ def demonstrate_chat_session():
             # Inspect History Array Structure
             # -----------------------------------------------------------
             print("-" * 70)
-            print(f"[*] Verified: Chat session maintains {len(chat.history)} historical turn messages:")
-            for idx, message in enumerate(chat.history):
-                role = message.role
-                snippet = message.parts[0].text[:60].replace("\n", " ")
-                print(f"    Turn {idx+1} [{role.upper()}]: {snippet}...")
+            history = chat.get_history()
+            print(f"[*] Verified: Chat session maintains {len(history)} historical turn messages:")
+            for idx, message in enumerate(history):
+                role = getattr(message, 'role', 'unknown')
+                content_text = ""
+                if hasattr(message, 'parts') and message.parts:
+                    content_text = getattr(message.parts[0], 'text', '')
+                snippet = content_text[:60].replace("\n", " ")
+                print(f"    Turn {idx+1} [{str(role).upper()}]: {snippet}...")
             print("=" * 70)
             return
 

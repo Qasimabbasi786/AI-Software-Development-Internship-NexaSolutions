@@ -4,7 +4,7 @@ Week 4 - Part D: Script 04 - Structured JSON Outputs & Defensive Parsing
 File: 04_structured_output.py
 Description: Demonstrates prompting LLMs for structured JSON adhering to a specific
              schema, paired with defensive, resilient try/except parsing using json.loads
-             and regex fallbacks.
+             and regex fallbacks with the modern Google GenAI SDK (google-genai).
 """
 
 import os
@@ -60,7 +60,7 @@ def parse_llm_json_safely(raw_output: str) -> Optional[Dict[str, Any]]:
 
 def demonstrate_structured_json():
     print("=" * 70)
-    print("  [Experiment 4] Google Gemini API - Structured JSON & Defensive Parsing")
+    print("  [Experiment 4] Google GenAI SDK - Structured JSON & Defensive Parsing")
     print("=" * 70)
 
     gemini_key = os.getenv("GEMINI_API_KEY")
@@ -84,16 +84,23 @@ Book Description: {book_description}
 
     if gemini_key and not gemini_key.startswith("your_"):
         try:
-            import google.generativeai as genai
-            genai.configure(api_key=gemini_key)
-            model = genai.GenerativeModel("gemini-3.8-flash")
-            response = model.generate_content(prompt)
+            from google import genai
+            from google.genai import types
+
+            client = genai.Client(api_key=gemini_key)
+            config = types.GenerateContentConfig(
+                temperature=0.1
+            )
+            response = client.models.generate_content(
+                model="gemini-3.8-flash",
+                contents=prompt,
+                config=config
+            )
             raw_response = response.text
         except Exception as ex:
             print(f"[!] Live API note: {ex}. Running simulated parser verification.\n")
 
     if not raw_response:
-        # Realistic raw output containing markdown codeblocks and conversational wrap
         raw_response = f"""Certainly! Here is your requested JSON object:
 ```json
 {{
@@ -114,7 +121,6 @@ Hope this is helpful!"""
     print(raw_response)
     print("-" * 50)
 
-    # Parse and validate with defensive error handling
     parsed_json = parse_llm_json_safely(raw_response)
 
     if parsed_json:

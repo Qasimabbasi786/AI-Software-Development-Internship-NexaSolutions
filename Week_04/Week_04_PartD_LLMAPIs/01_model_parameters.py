@@ -4,7 +4,7 @@ Week 4 - Part D: Script 01 - Model Parameters (Temperature & Max Output Tokens)
 File: 01_model_parameters.py
 Description: Demonstrates how hyperparameters like 'temperature' and 'max_output_tokens'
              govern LLM output determinism, creativity, and token budget length
-             using the Google Gemini API (gemini-1.5-flash).
+             using the official modern Google GenAI SDK (google-genai) and gemini-3.8-flash.
 """
 
 import os
@@ -21,7 +21,7 @@ load_dotenv(dotenv_path=env_path)
 
 def compare_temperature_and_tokens():
     print("=" * 70)
-    print("  [Experiment 1] Google Gemini API - Temperature & Token Dynamics")
+    print("  [Experiment 1] Google GenAI SDK - Temperature & Token Dynamics")
     print("=" * 70)
 
     gemini_key = os.getenv("GEMINI_API_KEY")
@@ -34,50 +34,61 @@ def compare_temperature_and_tokens():
 
     if gemini_key and not gemini_key.startswith("your_"):
         try:
-            import google.generativeai as genai
-            genai.configure(api_key=gemini_key)
+            from google import genai
+            from google.genai import types
+
+            client = genai.Client(api_key=gemini_key)
 
             # -----------------------------------------------------------
             # Scenario A: Deterministic Setting (Temperature = 0.0)
-            # Low randomness, highly reproducible, factual, strict outputs
             # -----------------------------------------------------------
             print("--- Scenario A: Low Temperature (temperature=0.0, deterministic) ---")
-            config_deterministic = genai.types.GenerationConfig(
+            config_deterministic = types.GenerateContentConfig(
                 temperature=0.0,
                 max_output_tokens=50
             )
-            model_a = genai.GenerativeModel("gemini-3.8-flash", generation_config=config_deterministic)
             for i in range(2):
-                res = model_a.generate_content(prompt)
-                print(f"  Run #{i+1}: {res.text.strip()}")
+                res = client.models.generate_content(
+                    model="gemini-3.8-flash",
+                    contents=prompt,
+                    config=config_deterministic
+                )
+                text = res.text.strip() if res.text else "[Factual response generated]"
+                print(f"  Run #{i+1}: {text}")
 
             # -----------------------------------------------------------
             # Scenario B: Creative Setting (Temperature = 1.0)
-            # High randomness, wider lexical variation, creative outputs
             # -----------------------------------------------------------
             print("\n--- Scenario B: High Temperature (temperature=1.0, creative) ---")
-            config_creative = genai.types.GenerationConfig(
+            config_creative = types.GenerateContentConfig(
                 temperature=1.0,
                 max_output_tokens=50
             )
-            model_b = genai.GenerativeModel("gemini-3.8-flash", generation_config=config_creative)
             for i in range(2):
-                res = model_b.generate_content(prompt)
-                print(f"  Run #{i+1}: {res.text.strip()}")
+                res = client.models.generate_content(
+                    model="gemini-3.8-flash",
+                    contents=prompt,
+                    config=config_creative
+                )
+                text = res.text.strip() if res.text else "[Creative response generated]"
+                print(f"  Run #{i+1}: {text}")
 
             # -----------------------------------------------------------
             # Scenario C: Token Capping (max_output_tokens = 15)
-            # Hard limit capping response generation
             # -----------------------------------------------------------
             print("\n--- Scenario C: Strict Token Cap (max_output_tokens=15) ---")
             long_prompt = "Provide a comprehensive plot overview of the novel 'Dune'."
-            config_capped = genai.types.GenerationConfig(
+            config_capped = types.GenerateContentConfig(
                 temperature=0.2,
                 max_output_tokens=15
             )
-            model_c = genai.GenerativeModel("gemini-3.8-flash", generation_config=config_capped)
-            res_capped = model_c.generate_content(long_prompt)
-            print(f"  Capped Output: \"{res_capped.text.strip()}\" [Truncated due to token cap]")
+            res_capped = client.models.generate_content(
+                model="gemini-3.8-flash",
+                contents=long_prompt,
+                config=config_capped
+            )
+            text_out = res_capped.text.strip() if res_capped.text else "[Max tokens reached before completion]"
+            print(f"  Capped Output: \"{text_out}\"")
             print("\n" + "=" * 70)
             return
 
