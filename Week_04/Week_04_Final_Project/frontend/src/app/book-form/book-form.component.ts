@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BookService } from '../book.service';
+import { Book } from '../book.model';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { BookService } from '../book.service';
 import { Book } from '../book.model';
-import { Observable } from 'rxjs';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-book-list',
@@ -19,6 +19,7 @@ export class BookListComponent implements OnInit {
 
   constructor(
     private bookService: BookService,
+    public authService: AuthService,
     private router: Router
   ) {}
 
@@ -47,6 +48,10 @@ export class BookListComponent implements OnInit {
     return `Author #${book.authorId || 'N/A'}`;
   }
 
+  navigateToAdd(): void {
+    this.router.navigate(['/add-book']);
+  }
+
   updateBook(id?: number): void {
     if (id !== undefined) {
       this.router.navigate(['/add-book', id]);
@@ -54,11 +59,17 @@ export class BookListComponent implements OnInit {
   }
 
   deleteBook(id?: number): void {
+    if (!this.authService.isAdmin()) {
+      alert('Unauthorized: Only administrators have permission to delete books.');
+      return;
+    }
+
     if (id !== undefined && confirm('Are you sure you want to delete this book?')) {
       this.isLoading = true;
       this.bookService.deleteBook(id).subscribe({
         next: () => {
-          this.loadBooks();
+          this.books = this.books.filter(b => (b.bookId || b.id) !== id);
+          this.isLoading = false;
         },
         error: (err) => {
           this.errorMessage = err.message || 'Failed to delete book.';
