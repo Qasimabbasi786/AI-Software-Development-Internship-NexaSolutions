@@ -1,0 +1,5 @@
+# Conflict Simulation Sandbox
+This file is used to demonstrate and resolve deliberate merge conflicts.
+Project Status: Initial baseline configuration.
+Team Lead: AI Core Architect
+Maintainer: Nexa Solutions Software Engineering Team
