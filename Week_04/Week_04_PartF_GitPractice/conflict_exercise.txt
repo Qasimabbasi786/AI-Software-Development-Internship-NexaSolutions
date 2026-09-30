@@ -1,5 +1,5 @@
 # Conflict Simulation Sandbox
 This file is used to demonstrate and resolve deliberate merge conflicts.
-Project Status: Initial baseline configuration.
-Team Lead: AI Core Architect
+Project Status: Branch B changed status to SECURITY_HARDENED with JWT validation.
+Team Lead: Security & DevOps Architect (Branch B Lead)
 Maintainer: Nexa Solutions Software Engineering Team
