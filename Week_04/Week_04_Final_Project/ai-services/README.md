@@ -1,33 +1,38 @@
-# Week 3 - AI Track: Standalone Python LLM Script
-### Google Gemini API Integration (`ai-services`)
+# Week 4 - AI Track: FastAPI Microservice with Engineered Prompts
+### Google GenAI SDK (`google-genai` + `gemini-3.8-flash`)
 
-Welcome to the AI Track module for the **Week 3 Final Project** in the **Nexa Solutions AI Software Development Internship Program**.
+Welcome to the AI Microservice for the **Week 4 Final Project** in the **Nexa Solutions AI Software Development Internship Program**.
 
-This module introduces our hands-on LLM scripting using the modern **Google GenAI SDK** (`google-genai` with `gemini-3.8-flash`) and **Python 3.x**. It takes a book title and description, queries the Gemini model for a concise one-paragraph summary and literary genre suggestions, and outputs the result to the console.
+This service upgrades the standalone script from Week 3 into a production-ready, asynchronous **FastAPI microservice** featuring Pydantic schema validation, resilient JSON parsing error boundaries, and engineered few-shot prompt templates with prompt injection protection.
 
 ---
 
 ## 📌 Architecture & Design Decisions
 
-### Why the AI Script Stays Standalone This Week
-Wiring LLM calls directly into the .NET API before prompt engineering, structured outputs, schema verification, and latency/fallback error handling are covered (Week 4) creates architectural instability. Keeping this script standalone proves LLM integration cleanly, while real backend embedding takes place in subsequent weeks.
+### Why the .NET API & AI Service Remain Independent This Week
+Connecting the .NET Core backend directly to the AI service now would mean the .NET API trusts a service that hasn't been evaluated for enterprise reliability, rate limiting, and vector embeddings yet. 
+- **Weeks 5 & 6** introduce embeddings, RAG (Retrieval-Augmented Generation), vector databases, and orchestration.
+- **Week 6** is where the real Angular → .NET API → FastAPI AI Service full-stack integration gets constructed on top of that robust foundation.
+- For Week 4, both services operate independently and can be verified side-by-side.
 
 ```
 ┌────────────────────────────────────────────────────────┐
-│             CLI / Standalone Python Script             │
-│  - Input: Title & Description arguments                │
-│  - Environment: GEMINI_API_KEY loaded via python-dotenv│
+│             FastAPI AI Microservice (:8000)            │
+│  - /health              -> Diagnostic status & provider│
+│  - /summarize           -> Pydantic JSON + Gemini Flash│
+│  - /genre-suggestion    -> Multi-category taxonomy     │
 └──────────────────────────┬─────────────────────────────┘
-                           │ Generative Content Prompt
+                           │ Engineered Prompt + Defense
                            ▼
 ┌────────────────────────────────────────────────────────┐
-│             Google Gemini API                          │
-│  - Model: gemini-flash-latest                          │
-│  - Generates: 1-paragraph summary & 3 suggested genres │
+│             Google GenAI SDK (google-genai)            │
+│  - Model: gemini-3.8-flash                             │
+│  - Persona: Senior Literary Cataloguer                 │
+│  - Defense: Untrusted user data sandbox                │
 └──────────────────────────┬─────────────────────────────┘
                            │
                            ▼
-                    Console Terminal
+               Structured Validated JSON
 ```
 
 ---
@@ -36,8 +41,9 @@ Wiring LLM calls directly into the .NET API before prompt engineering, structure
 
 ```
 ai-services/
-├── requirements.txt            # Python dependencies (google-genai, python-dotenv, Pillow)
-├── summarize_book.py           # Core execution script querying Gemini API (gemini-3.8-flash)
+├── main.py                     # Production FastAPI application
+├── requirements.txt            # Python dependencies (fastapi, uvicorn, pydantic, google-genai)
+├── summarize_book.py           # Standalone CLI execution script (gemini-3.8-flash)
 ├── .env.example                # Safe environment variable template
 ├── .env                        # Local secret key file (gitignored)
 └── README.md                   # Technical documentation and execution guide
@@ -52,25 +58,41 @@ A dedicated `.env` file is placed inside this directory containing the Gemini AP
 GEMINI_API_KEY=your_actual_gemini_api_key_here
 ```
 
-> [!NOTE]
-> `.env` is strictly protected by root `.gitignore` to prevent secret credentials from entering source control.
-
 ---
 
 ## 🚀 Execution Guide
 
-Run the script using our dedicated AI virtual environment:
+Run the AI Microservice using our dedicated virtual environment:
 
-```bash
-# Navigate to ai-services directory
-cd Week_03/Week_03_Final_Project/ai-services
+```powershell
+# 1. Navigate to ai-services directory
+cd "Week_04/Week_04_Final_Project/ai-services"
 
-# Install dependencies inside the AI environment
-& "D:\Software\PythonEnvironments\AI_env\Scripts\python.exe" -m pip install -r requirements.txt
+# 2. Install dependencies (if not already installed)
+& "D:\Software\PythonEnvironments\AI_env\Scripts\pip.exe" install -r requirements.txt
 
-# Run script with default sample inputs (Faiz Ahmed Faiz poetry collection)
-& "D:\Software\PythonEnvironments\AI_env\Scripts\python.exe" summarize_book.py
-
-# Run script with custom book title and description
-& "D:\Software\PythonEnvironments\AI_env\Scripts\python.exe" summarize_book.py "Design Patterns" "Elements of Reusable Object-Oriented Software by the Gang of Four."
+# 3. Start the FastAPI microservice with live reload
+& "D:\Software\PythonEnvironments\AI_env\Scripts\python.exe" -m uvicorn main:app --reload --port 8000
 ```
+
+### 📡 Testing the Endpoints
+
+#### A. Health Probe
+```bash
+curl -X GET "http://localhost:8000/health"
+```
+
+#### B. Summarize & Genre Request
+```bash
+curl -X POST "http://localhost:8000/summarize" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "title": "Clean Architecture",
+       "description": "A Craftsman Guide to Software Structure and Design by Robert C. Martin."
+     }'
+```
+
+#### C. Interactive OpenAPI Documentation
+Open your browser to:
+- **Swagger UI:** `http://localhost:8000/docs`
+- **ReDoc:** `http://localhost:8000/redoc`
