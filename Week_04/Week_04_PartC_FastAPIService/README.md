@@ -44,7 +44,7 @@ In Week 3, the AI track was executed as a standalone command-line Python script.
 ## 🛠️ Step-by-Step Execution Guide
 
 ### 1. Dedicated Python Virtual Environment
-All dependencies (`fastapi`, `uvicorn`, `pydantic`, `google-generativeai`, `python-dotenv`) are installed strictly in the dedicated virtual environment:
+All dependencies (`fastapi`, `uvicorn`, `pydantic`, `google-genai`, `python-dotenv`) are installed strictly in the dedicated virtual environment:
 - **Python Interpreter:** `D:\Software\PythonEnvironments\AI_env\Scripts\python.exe`
 - **Pip Executable:** `D:\Software\PythonEnvironments\AI_env\Scripts\pip.exe`
 

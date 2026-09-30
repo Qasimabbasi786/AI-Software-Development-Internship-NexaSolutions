@@ -52,7 +52,7 @@ response2 = chat.send_message("Recommend 2 more books like that.")
 - **Metric Measured:**
   - **Time-to-First-Token (TTFT):** How fast the user sees initial feedback on screen (typically < 0.5s with Gemini Flash).
 ```python
-response = model.generate_content(prompt, stream=True)
+response = client.models.generate_content_stream(model="gemini-3.8-flash", contents=prompt)
 for chunk in response:
     print(chunk.text, end="", flush=True)
 ```
