@@ -31,6 +31,19 @@ sequenceDiagram
 - **Auth Foundation**: `User` entity & `AuthController` skeleton for login/register testing (JWT issuance scheduled for Week 4).
 - **AI Track**: Standalone Python script querying Google Gemini API (`gemini-flash-latest`) for rich, contextual book summaries and genre recommendations with daily-refreshing free-tier support.
 
+
+## 📡 API Endpoints Reference Table
+
+| Method | Endpoint | Description | Request Body | Auth Required |
+| :--- | :--- | :--- | :--- | :--- |
+| `GET` | `/api/books` | Retrieve all books with authors and categories | None | No |
+| `GET` | `/api/books/{id}` | Retrieve single book by ID | None | No |
+| `POST` | `/api/books` | Create a new book record | `Book` JSON payload | No |
+| `PUT` | `/api/books/{id}` | Update existing book details | `Book` JSON payload | No |
+| `DELETE`| `/api/books/{id}` | Delete book by ID | None | No |
+| `POST` | `/api/auth/register`| Register new user (Auth skeleton) | `{ "username", "passwordHash", "role" }` | No |
+| `POST` | `/api/auth/login` | Authenticate user (Auth skeleton) | `{ "username", "password" }` | No |
+
 ## 🚀 Execution & Verification Guide
 
 ### 1. Database & Backend API
@@ -41,7 +54,7 @@ cd Week_03/Week_03_Final_Project/backend
 # Run .NET API (starts on http://localhost:5000)
 dotnet run
 ```
-Access Swagger UI at: `http://localhost:5000`
+Access Swagger UI at: `http://localhost:5000/swagger`
 
 ### 2. Angular Client Application
 ```bash
@@ -65,3 +78,4 @@ cd Week_03/Week_03_Final_Project/ai-services
 # Run the Gemini summary script
 & "D:\Software\PythonEnvironments\AI_env\Scripts\python.exe" summarize_book.py "Nuskha-Hai-Wafa" "Faiz Ahmed Faiz poetry collection covering themes of love, struggle, and justice."
 ```
+
