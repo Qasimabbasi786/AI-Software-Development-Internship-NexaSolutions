@@ -3,32 +3,65 @@
 ## 📌 Overview
 This directory serves as the integrated project workspace combining all components mastered in Parts A through G into a unified solution.
 
-## 🏗️ Architecture & Data Flow
-```text
-Angular SPA (Frontend) 
-  └── HTTP Requests (HttpClient) 
-       └── ASP.NET Core Web API (Controllers & Services) 
-            └── Repository Layer 
-                 └── EF Core (Npgsql Provider) 
-                      └── PostgreSQL Database (LibraryDb_Week3)
+## 🏗️ Complete End-to-End Data Flow
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as User / Browser
+    participant Angular as Angular Client (:4200)
+    participant API as ASP.NET Core API (:5000)
+    participant Repo as IBookRepository (EF Core)
+    participant DB as PostgreSQL (librarydb_week3)
 
-Standalone Python AI Script ── (LLM API) ──> Summaries & Genre Recommendations
+    User->>Angular: Enters Book Details & clicks "Add Book"
+    Angular->>API: POST /api/books (JSON Payload)
+    API->>Repo: AddAsync(book)
+    Repo->>DB: INSERT INTO "Books" ("Title", "AuthorId", ...)
+    DB-->>Repo: Saved entity with new BookId
+    Repo-->>API: Returns Book entity
+    API-->>Angular: 201 Created (CreatedAtAction /api/books/{id})
+    Angular->>User: Displays success and reloads real-time book list
 ```
 
-## 🛠️ Tech Stack
-- **Backend**: C# / .NET ASP.NET Core Web API
-- **Database**: PostgreSQL with EF Core (`Npgsql.EntityFrameworkCore.PostgreSQL`)
-- **Frontend**: Angular SPA with Reactive Forms & RxJS `HttpClient`
-- **AI Track**: Python 3.x standalone script with dotenv & API SDK
+## 🛠️ Tech Stack & Key Components
+- **Backend API**: ASP.NET Core 8 Web API (`libraryAPI`) with Controllers, Swagger, and DI.
+- **Database ORM**: Entity Framework Core 8 with PostgreSQL (`Npgsql.EntityFrameworkCore.PostgreSQL`).
+- **Configuration Security**: `.env` parser dynamically resolves credentials without hardcoded strings.
+- **Frontend SPA**: Standalone Angular 18+ components, Reactive Forms, dynamic loading spinner, and error alert banners.
+- **Auth Foundation**: `User` entity & `AuthController` skeleton for login/register testing (JWT issuance scheduled for Week 4).
+- **AI Track**: Standalone Python script querying Google Gemini API (`gemini-flash-latest`) for rich, contextual book summaries and genre recommendations with daily-refreshing free-tier support.
 
-## 📁 Project Structure Layout
-```text
-Week_03_Project/
-├── README.md
-├── backend/            # ASP.NET Core Web API Project
-├── frontend/           # Angular SPA Client Application
-└── ai-services/        # Python AI Summary Script
+## 🚀 Execution & Verification Guide
+
+### 1. Database & Backend API
+```bash
+cd Week_03/Week_03_Final_Project/backend
+
+# Verify .env credentials (POSTGRES_HOST, PORT, DB, USER, PASSWORD)
+# Run .NET API (starts on http://localhost:5000)
+dotnet run
 ```
+Access Swagger UI at: `http://localhost:5000`
 
-## 🚀 Execution Guide
-Detailed step-by-step instructions for running the backend API, frontend client, and standalone AI script will be updated as each module is implemented.
+### 2. Angular Client Application
+```bash
+cd Week_03/Week_03_Final_Project/frontend
+
+# Install dependencies if not already present
+npm install
+
+# Start development server
+npm start
+```
+Open your browser at `http://localhost:4200` to interact with the responsive book directory, real-time feedback notifications, and book creation form.
+
+### 3. Standalone AI Summary Script (Google Gemini)
+```bash
+cd Week_03/Week_03_Final_Project/ai-services
+
+# Install requirements inside the dedicated AI virtual environment
+& "D:\Software\PythonEnvironments\AI_env\Scripts\python.exe" -m pip install -r requirements.txt
+
+# Run the Gemini summary script
+& "D:\Software\PythonEnvironments\AI_env\Scripts\python.exe" summarize_book.py "Nuskha-Hai-Wafa" "Faiz Ahmed Faiz poetry collection covering themes of love, struggle, and justice."
+```
