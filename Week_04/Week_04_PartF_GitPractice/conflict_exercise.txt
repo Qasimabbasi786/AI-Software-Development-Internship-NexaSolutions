@@ -1,5 +1,5 @@
 # Conflict Simulation Sandbox
 This file is used to demonstrate and resolve deliberate merge conflicts.
-Project Status: Initial baseline configuration.
-Team Lead: AI Core Architect
+Project Status: Branch A updated status to ACTIVE_DEVELOPMENT with feature auth pipeline.
+Team Lead: AI Core Architect (Branch A Lead)
 Maintainer: Nexa Solutions Software Engineering Team
