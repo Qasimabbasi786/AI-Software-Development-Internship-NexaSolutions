@@ -1,0 +1,5 @@
+# Conflict Simulation Sandbox
+This file is used to demonstrate and resolve deliberate merge conflicts.
+Project Status: UNIFIED_ARCHITECTURE - Combines ACTIVE_DEVELOPMENT with SECURITY_HARDENED JWT validation.
+Team Lead: AI Core Architect & Security DevOps Architect (Joint Leadership)
+Maintainer: Nexa Solutions Software Engineering Team
