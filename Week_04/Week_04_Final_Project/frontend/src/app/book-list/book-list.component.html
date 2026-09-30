@@ -1,16 +1,32 @@
 <div class="container">
   <div class="header-section">
-    <h2>Library Book Directory</h2>
-    <p>Manage, view, and organize all available books in the system backed by PostgreSQL.</p>
+    <div class="header-title-row">
+      <div>
+        <h2>Library Book Directory</h2>
+        <p>Manage, view, and organize all available books in the system backed by PostgreSQL.</p>
+      </div>
+      <!-- Add Book Button: Show ONLY for Admin users (Part B Requirement) -->
+      <button *ngIf="authService.isAdmin()" class="add-header-btn" (click)="navigateToAdd()">
+        + Add New Book
+      </button>
+    </div>
+  </div>
+
+  <!-- Role status notification banner -->
+  <div *ngIf="!authService.isLoggedIn()" class="info-banner">
+    ℹ️ You are browsing in <strong>Public Read-Only Mode</strong>. Sign in to add or manage books.
+  </div>
+  <div *ngIf="authService.isLoggedIn() && !authService.isAdmin()" class="info-banner member-banner">
+    👤 Signed in as <strong>{{ authService.getUsername() }}</strong> (Standard User). Admin rights are required to delete books.
   </div>
 
   <!-- Error State Alert -->
-  <div *ngIf="errorMessage" class="error-banner" style="background: #fee2e2; color: #b91c1c; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-weight: 500;">
+  <div *ngIf="errorMessage" class="error-banner">
     ⚠️ {{ errorMessage }}
   </div>
 
   <!-- Loading State Indicator -->
-  <div *ngIf="isLoading" class="loading-state" style="text-align: center; padding: 30px; font-weight: 600; color: #4f46e5;">
+  <div *ngIf="isLoading" class="loading-state">
     ⏳ Loading books from database...
   </div>
 
@@ -34,8 +50,20 @@
           <td><span class="category-tag">{{ book.category || book.isbn || 'Literature' }}</span></td>
           <td>{{ book.createdAt | date:'mediumDate' }}</td>
           <td class="btns-group">
-            <button class="update-btn" (click)="updateBook(book.bookId || book.id)">Update</button>
-            <button class="delete-btn" (click)="deleteBook(book.bookId || book.id)">Delete</button>
+            <!-- Update button visible to logged in users -->
+            <button *ngIf="authService.isLoggedIn()" class="update-btn" (click)="updateBook(book.bookId || book.id)">
+              Update
+            </button>
+            
+            <!-- Delete button: strictly shown only for ADMIN role (Part B Requirement) -->
+            <button *ngIf="authService.isAdmin()" class="delete-btn" (click)="deleteBook(book.bookId || book.id)">
+              Delete
+            </button>
+
+            <!-- Read-only badge if unauthenticated -->
+            <span *ngIf="!authService.isLoggedIn()" class="view-only-text">
+              View Only
+            </span>
           </td>
         </tr>
       </tbody>
