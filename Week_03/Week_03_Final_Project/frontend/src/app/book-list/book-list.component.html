@@ -1,0 +1,48 @@
+<div class="container">
+  <div class="header-section">
+    <h2>Library Book Directory</h2>
+    <p>Manage, view, and organize all available books in the system backed by PostgreSQL.</p>
+  </div>
+
+  <!-- Error State Alert -->
+  <div *ngIf="errorMessage" class="error-banner" style="background: #fee2e2; color: #b91c1c; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-weight: 500;">
+    ⚠️ {{ errorMessage }}
+  </div>
+
+  <!-- Loading State Indicator -->
+  <div *ngIf="isLoading" class="loading-state" style="text-align: center; padding: 30px; font-weight: 600; color: #4f46e5;">
+    ⏳ Loading books from database...
+  </div>
+
+  <div class="table-card" *ngIf="!isLoading">
+    <table class="styled-table" *ngIf="books.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Book Title</th>
+          <th>Author Name</th>
+          <th>Category / ISBN</th>
+          <th>Created At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let book of books">
+          <td><span class="badge">#{{ book.bookId || book.id }}</span></td>
+          <td><strong>{{ book.title }}</strong></td>
+          <td>{{ getAuthorName(book) }}</td>
+          <td><span class="category-tag">{{ book.category || book.isbn || 'Literature' }}</span></td>
+          <td>{{ book.createdAt | date:'mediumDate' }}</td>
+          <td class="btns-group">
+            <button class="update-btn" (click)="updateBook(book.bookId || book.id)">Update</button>
+            <button class="delete-btn" (click)="deleteBook(book.bookId || book.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="books.length === 0 && !errorMessage" style="text-align: center; padding: 40px; color: #64748b;">
+      No books currently found in the library database.
+    </div>
+  </div>
+</div>
