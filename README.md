@@ -40,6 +40,7 @@ Welcome to the central repository for the **Nexa Solutions AI Software Developme
 | **[Week 02](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_02/README.md)** | **Structured C# + ASP.NET Core + Angular Forms** | `Completed` ✅ | • Dependency Inversion (DIP), generic algorithms, async/await.<br>• ASP.NET Core REST API: HTTP verbs, status codes, Swagger/OpenAPI.<br>• Angular Reactive Forms with synchronous validators (`required`, `email`).<br>• Centralized state with RxJS `BehaviorSubject` & client routing.<br>• **Capstone:** Full-Stack Library Management System (ASP.NET Core API + Angular Reactive UI). |
 | **[Week 03](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_03)** | **Enterprise Persistence, EF Core & Integration** | `Completed` ✅ | • Part A: PostgreSQL schema design, indexes, and queries.<br>• Part B: Entity Framework Core Code-First migrations & relations.<br>• Part C: Complete API integration with persistent storage.<br>• Part D: Authentication & Authorization architecture (JWT notes).<br>• Part E: Angular frontend client consuming persistent API.<br>• Parts F & G (Git Workflow & AI Scripts): Finalized and integrated into Capstone. |
 | **[Week 04](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_04)** | **JWT Auth (.NET + Angular) & FastAPI AI Microservice** | `Completed` ✅ | • Part A: Real JWT issuing, password hashing (`PasswordHasher<User>`), and role-based endpoint authorization.<br>• Part B: Angular `AuthService`, functional HTTP interceptor, and `authGuard`.<br>• Part C: FastAPI AI Microservice with Pydantic validations & OpenAPI docs.<br>• Part D & E: LLM APIs in depth (`google-genai` + `gemini-3.8-flash`, history, streaming, prompt injection defenses).<br>• Part F: Git merge conflict resolution, branch protection, & PR template.<br>• **Capstone:** Secured Library App + AI Microservice with Engineered Prompts. |
+| **[Week 05](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_05)** | **Embeddings, Vector Databases & Manual RAG Pipeline** | `In Progress` 🚀 | • Part A: Vector embeddings fundamentals, Cosine Similarity & top-$k$ semantic search.<br>• Part B: Local ChromaDB vector storage, collections & metadata filtering.<br>• Part C: Complete 8-stage manual RAG pipeline (chunking, embedding, storage, retrieval, context, generation, attribution).<br>• Part D: RAG quality evaluation, hallucination reduction & chunk trade-offs.<br>• Part E: FastAPI `/ask` endpoint wiring manual RAG pipeline.<br>• Part F: Safe Git commit undoing (`git revert`) on protected branches.<br>• **Capstone:** Library Knowledge Assistant with real .NET catalog corpus. |
 
 ---
 
@@ -79,18 +80,29 @@ All Week Tasks Sol/
 │   ├── Week_03_PartG_AIScripts/              # Python AI scripts & data automation
 │   └── Week_03_Final_Project/                # Enterprise integrated capstone
 │
-└── Week_04/                                  # WEEK 4: JWT AUTH & FASTAPI AI MICROSERVICE
-    ├── README.md                             # Week 4 Executive Summary & Overview
-    ├── Week_04_PartA_AuthBackend/            # ASP.NET Core JWT Auth, Password Hashing & Role Authorization
-    ├── Week_04_PartB_AngularAuth/            # Angular Auth Integration (Service, Interceptor, Guards)
-    ├── Week_04_PartC_FastAPIService/         # FastAPI AI Microservice with Pydantic Validations
-    ├── Week_04_PartD_LLMAPIs/                # Google GenAI SDK Deep-Dive (Parameters, History, Streaming)
-    ├── Week_04_PartE_PromptEngineering/      # Prompt Engineering, Few-Shot Templates & Injection Defense
-    ├── Week_04_PartF_GitPractice/            # Merge Conflict Simulation & Branch Protection Setup
-    └── Week_04_Final_Project/                # Capstone: Secured Library App + Independent AI Microservice
-        ├── backend/                          # Secured ASP.NET Core 8 Web API (:5000)
-        ├── frontend/                         # Role-Gated Angular 18/19 SPA (:4200)
-        └── ai-services/                      # FastAPI AI Microservice with Engineered Prompts (:8000)
+├── Week_04/                                  # WEEK 4: JWT AUTH & FASTAPI AI MICROSERVICE
+│   ├── README.md                             # Week 4 Executive Summary & Overview
+│   ├── Week_04_PartA_AuthBackend/            # ASP.NET Core JWT Auth, Password Hashing & Role Authorization
+│   ├── Week_04_PartB_AngularAuth/            # Angular Auth Integration (Service, Interceptor, Guards)
+│   ├── Week_04_PartC_FastAPIService/         # FastAPI AI Microservice with Pydantic Validations
+│   ├── Week_04_PartD_LLMAPIs/                # Google GenAI SDK Deep-Dive (Parameters, History, Streaming)
+│   ├── Week_04_PartE_PromptEngineering/      # Prompt Engineering, Few-Shot Templates & Injection Defense
+│   ├── Week_04_PartF_GitPractice/            # Merge Conflict Simulation & Branch Protection Setup
+│   └── Week_04_Final_Project/                # Capstone: Secured Library App + Independent AI Microservice
+│       ├── backend/                          # Secured ASP.NET Core 8 Web API (:5000)
+│       ├── frontend/                         # Role-Gated Angular 18/19 SPA (:4200)
+│       └── ai-services/                      # FastAPI AI Microservice with Engineered Prompts (:8000)
+│
+└── Week_05/                                  # WEEK 5: EMBEDDINGS, VECTOR DBS & MANUAL RAG (GEMINI)
+    ├── README.md                             # Week 5 Architecture & Guide (Google Gemini Standard)
+    ├── requirements.txt                      # Dependencies (chromadb, google-genai, fastapi, uvicorn, numpy)
+    ├── Week_05_PartA_Embeddings/             # Gemini text-embedding-004, Cosine Similarity & semantic search
+    ├── Week_05_PartB_VectorDatabases/        # ChromaDB collections, L2 distance & metadata filtering
+    ├── Week_05_PartC_RAGPipeline/            # Manual 8-stage RAG pipeline (chunking to source attribution)
+    ├── Week_05_PartD_Evaluation/             # RAG evaluation suite, chunk trade-offs & hit rate metrics
+    ├── Week_05_PartE_FastAPIAsk/             # FastAPI microservice exposing grounded /ask endpoint
+    ├── Week_05_PartF_GitRevert/              # Safe commit rollback walkthroughs using git revert
+    └── Week_05_Final_Project/                # Library Knowledge Assistant & catalog grounding test suite
 ```
 
 ---
