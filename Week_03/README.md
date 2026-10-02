@@ -1,4 +1,17 @@
-# Week 3 — Detailed Technical Task Solutions & Architecture
+# 💾 Enterprise Persistence, Relational Design & EF Core
+### Week 3: PostgreSQL Schema Design, EF Core Migrations & Angular API Client
+
+**Author:** Muhammad Qasim  
+**Program:** AI Software Development Internship (.NET + Angular + AI)  
+**Milestone:** Week 3 — Persistence & Enterprise Architecture  
+
+[![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL_16-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![EF Core](https://img.shields.io/badge/ORM-Entity_Framework_Core-512BD4?logo=dotnet&logoColor=white)](https://learn.microsoft.com/ef/core/)
+[![Angular](https://img.shields.io/badge/Angular-18-DD0031?logo=angular&logoColor=white)](https://angular.dev/)
+[![Status: Completed](https://img.shields.io/badge/Status-Completed_%E2%9C%85-success)](https://github.com/)
+
+---
 
 ## 📌 Internship Overview & Scope
 This repository folder contains the complete, production-ready technical implementations for **Week 3** of the 8-Week AI Software Development Internship. 

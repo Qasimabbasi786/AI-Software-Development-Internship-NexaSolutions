@@ -1,4 +1,17 @@
-# Week 3 Final Project - Database-Backed Library API + Angular Client + AI Script
+# 🏛️ Database-Backed Library Portal & AI Automation
+### Week 3 — Capstone Project: PostgreSQL, EF Core, Angular Client & Python AI
+
+**Author:** Muhammad Qasim  
+**Program:** AI Software Development Internship (.NET + Angular + AI)  
+**Milestone:** Week 3 Final Project — Persistent Enterprise Integration  
+
+[![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL_16-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![EF Core](https://img.shields.io/badge/ORM-Entity_Framework_Core-512BD4?logo=dotnet&logoColor=white)](https://learn.microsoft.com/ef/core/)
+[![Angular](https://img.shields.io/badge/Angular-18-DD0031?logo=angular&logoColor=white)](https://angular.dev/)
+[![Status: Completed](https://img.shields.io/badge/Status-Completed_%E2%9C%85-success)](https://github.com/)
+
+---
 
 ## 📌 Overview
 This directory serves as the integrated project workspace combining all components mastered in Parts A through G into a unified solution.

@@ -1,5 +1,17 @@
-# Week 1: Programming Foundations (C#/.NET + Angular/TypeScript)
-### Nexa Solutions Internship Program — Technical Documentation
+# 🚀 Programming Foundations: C#/.NET & Angular
+### Week 1: Type Safety, OOP, LINQ & Standalone Components
+
+**Author:** Muhammad Qasim  
+**Program:** AI Software Development Internship (.NET + Angular + AI)  
+**Milestone:** Week 1 — Engineering Foundations  
+
+[![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![C# 12](https://img.shields.io/badge/C%23-12.0-239120?logo=csharp&logoColor=white)](https://learn.microsoft.com/dotnet/csharp/)
+[![Angular](https://img.shields.io/badge/Angular-18-DD0031?logo=angular&logoColor=white)](https://angular.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Status: Completed](https://img.shields.io/badge/Status-Completed_%E2%9C%85-success)](https://github.com/)
+
+---
 
 Welcome to **Week 1** of the Nexa Solutions Software Engineering Internship. This week establishes foundational skills across modern full-stack web and enterprise development, bridging **C#/.NET** on the backend with **Angular/TypeScript** on the frontend.
 

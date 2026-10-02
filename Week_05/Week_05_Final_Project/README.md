@@ -1,8 +1,14 @@
-# Week 5 Final Project — Library Knowledge Assistant (RAG)
+# 🏛️ Library Knowledge Assistant (RAG Pipeline & Vector Search)
 
 **Author:** Muhammad Qasim  
-**Curriculum Track:** Nexa Solutions AI Software Development Internship  
-**Status:** Completed & Validated  
+**Program:** AI Software Development Internship (.NET + Angular + AI)  
+**Milestone:** Week 5 Final Project — Capstone Multi-Tier Architecture  
+
+[![Python: 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![ChromaDB](https://img.shields.io/badge/Vector_DB-ChromaDB-FF6F00?logo=chroma&logoColor=white)](https://www.trychroma.com/)
+[![Google Gemini](https://img.shields.io/badge/AI_Engine-Google_Gemini-4285F4?logo=google&logoColor=white)](https://ai.google.dev/)
+[![Status: Completed](https://img.shields.io/badge/Status-Completed_%E2%9C%85-success)](https://github.com/)
 
 ---
 

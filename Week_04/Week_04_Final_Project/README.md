@@ -1,4 +1,18 @@
-# Week 4 Final Project - Secured Library App (.NET + Angular) + AI Microservice (FastAPI)
+# 🛡️ Enterprise Secured Library System & AI Service
+### Week 4 — Capstone Project: JWT Authentication, Role-Gated Angular & FastAPI AI
+
+**Author:** Muhammad Qasim  
+**Program:** AI Software Development Internship (.NET + Angular + AI)  
+**Milestone:** Week 4 Final Project — Hardened Full-Stack Security  
+
+[![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![Angular](https://img.shields.io/badge/Angular-18%2F19-DD0031?logo=angular&logoColor=white)](https://angular.dev/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![JWT](https://img.shields.io/badge/Security-JWT_Bearer-000000?logo=jsonwebtokens&logoColor=white)](https://jwt.io/)
+[![Google Gemini](https://img.shields.io/badge/AI_Engine-Google_Gemini-4285F4?logo=google&logoColor=white)](https://ai.google.dev/)
+[![Status: Completed](https://img.shields.io/badge/Status-Completed_%E2%9C%85-success)](https://github.com/)
+
+---
 
 ## 📌 Overview
 This directory serves as the integrated enterprise workspace for **Week 4**, delivering a hardened full-stack architecture:

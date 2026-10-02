@@ -1,6 +1,20 @@
 # Nexa Solutions — AI Software Development Internship
 ### In Partnership with OriginSoft Consultancy | Engineering Portfolio
 
+**Author:** Muhammad Qasim  
+**Track:** AI & Full-Stack Software Engineering (.NET 8 + Angular + PostgreSQL + Gemini AI)  
+**Repository:** Enterprise Internship Portfolio  
+
+[![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![Angular](https://img.shields.io/badge/Angular-18%2F19-DD0031?logo=angular&logoColor=white)](https://angular.dev/)
+[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![ChromaDB](https://img.shields.io/badge/Vector_DB-ChromaDB-FF6F00?logo=chroma&logoColor=white)](https://www.trychroma.com/)
+[![Google Gemini](https://img.shields.io/badge/AI_Engine-Google_Gemini-4285F4?logo=google&logoColor=white)](https://ai.google.dev/)
+[![Milestone: Week 5 Done](https://img.shields.io/badge/Progress-Week_5_Completed_%E2%9C%85-success)](https://github.com/)
+
+---
+
 Welcome to the central repository for the **Nexa Solutions AI Software Development Internship** in technical partnership with **OriginSoft Consultancy**. This repository houses hands-on solutions, production-grade architectures, and incremental milestones demonstrating full-stack engineering proficiency spanning **C# / .NET**, **Angular & TypeScript**, **PostgreSQL / EF Core**, and **Python-driven AI solutions**.
 
 ---

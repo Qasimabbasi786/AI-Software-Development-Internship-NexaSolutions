@@ -1,4 +1,17 @@
-# Week 2 - Capstone Project: Library Management System (ASP.NET Core API + Angular Reactive Forms)
+# 📚 Full-Stack Library Management Suite
+### Week 2 — Capstone Project: ASP.NET Core Web API + Angular Reactive Forms
+
+**Author:** Muhammad Qasim  
+**Program:** AI Software Development Internship (.NET + Angular + AI)  
+**Milestone:** Week 2 Final Project — Tiered Full-Stack Architecture  
+
+[![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![ASP.NET Core](https://img.shields.io/badge/ASP.NET_Core-Web_API-512BD4?logo=dotnet&logoColor=white)](https://learn.microsoft.com/aspnet/core/)
+[![Angular](https://img.shields.io/badge/Angular-19%2F22-DD0031?logo=angular&logoColor=white)](https://angular.dev/)
+[![RxJS](https://img.shields.io/badge/Reactive-RxJS_Forms-B7178C?logo=reactivex&logoColor=white)](https://rxjs.dev/)
+[![Status: Completed](https://img.shields.io/badge/Status-Completed_%E2%9C%85-success)](https://github.com/)
+
+---
 
 Welcome to the **Week 2 Capstone Project** for the **Nexa Solutions Internship Program**. This project delivers a full-stack, enterprise-patterned Library Management application combining an **ASP.NET Core Web API** (employing the Controller-Service-Repository pattern) with an **Angular 19/22** frontend powered by **Reactive Forms**, client-side routing, and real-time HTTP integration via `HttpClient`.
 

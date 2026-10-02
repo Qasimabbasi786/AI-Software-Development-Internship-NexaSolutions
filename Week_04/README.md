@@ -1,6 +1,20 @@
-# Week 4: JWT Authentication, Angular Auth & AI FastAPI Microservice
+# 🔐 Enterprise Authentication, Security & AI Microservices
+### Week 4: ASP.NET Core JWT, Angular Role Guards & FastAPI AI Service
 
-Welcome to **Week 4** of the **Nexa Solutions AI Software Development Internship** (in technical partnership with OriginSoft Consultancy).
+**Author:** Muhammad Qasim  
+**Program:** AI Software Development Internship (.NET + Angular + AI)  
+**Milestone:** Week 4 — Authentication, Authorization & Production AI  
+
+[![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![Angular](https://img.shields.io/badge/Angular-18%2F19-DD0031?logo=angular&logoColor=white)](https://angular.dev/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![JWT](https://img.shields.io/badge/Security-JWT_Bearer-000000?logo=jsonwebtokens&logoColor=white)](https://jwt.io/)
+[![Google Gemini](https://img.shields.io/badge/AI_Engine-Google_Gemini-4285F4?logo=google&logoColor=white)](https://ai.google.dev/)
+[![Status: Completed](https://img.shields.io/badge/Status-Completed_%E2%9C%85-success)](https://github.com/)
+
+---
+
+## 📌 Overview
 
 Week 4 marks a significant transition:
 - Moving from an authentication vocabulary/skeleton in Week 3 to a full, production-ready **JWT Authentication & Password Hashing** implementation in ASP.NET Core and PostgreSQL.

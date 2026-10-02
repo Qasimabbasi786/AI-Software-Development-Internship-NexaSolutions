@@ -1,5 +1,17 @@
-# Week 2: Structured C# + ASP.NET Core Basics + Angular Forms
-### Nexa Solutions Internship Program — Technical Documentation
+# 🌐 Structured APIs, Controller Patterns & Reactive Forms
+### Week 2: ASP.NET Core Web APIs, Clean Architecture & Angular Forms
+
+**Author:** Muhammad Qasim  
+**Program:** AI Software Development Internship (.NET + Angular + AI)  
+**Milestone:** Week 2 — Full-Stack API & UI Architecture  
+
+[![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![C# 12](https://img.shields.io/badge/C%23-12.0-239120?logo=csharp&logoColor=white)](https://learn.microsoft.com/dotnet/csharp/)
+[![Angular](https://img.shields.io/badge/Angular-18-DD0031?logo=angular&logoColor=white)](https://angular.dev/)
+[![RxJS](https://img.shields.io/badge/State-RxJS-B7178C?logo=reactivex&logoColor=white)](https://rxjs.dev/)
+[![Status: Completed](https://img.shields.io/badge/Status-Completed_%E2%9C%85-success)](https://github.com/)
+
+---
 
 Welcome to **Week 2** of the Nexa Solutions Software Engineering Internship. This week elevates your full-stack engineering proficiency: structuring intermediate C# code, designing enterprise-grade **ASP.NET Core Web APIs** with dependency injection, and building dynamic, validated frontends using **Angular Reactive Forms**.
 

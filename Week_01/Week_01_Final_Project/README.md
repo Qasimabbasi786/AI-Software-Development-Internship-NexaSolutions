@@ -1,4 +1,17 @@
-# Week 1 - Capstone Project: Student Management System (C#/.NET + Angular)
+# 🎓 Student Management Portal & Interactive Directory
+### Week 1 — Capstone Project: C#/.NET Console & Angular Web Client
+
+**Author:** Muhammad Qasim  
+**Program:** AI Software Development Internship (.NET + Angular + AI)  
+**Milestone:** Week 1 Final Project — Dual Subsystem Architecture  
+
+[![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![C# 12](https://img.shields.io/badge/C%23-12.0-239120?logo=csharp&logoColor=white)](https://learn.microsoft.com/dotnet/csharp/)
+[![Angular](https://img.shields.io/badge/Angular-18-DD0031?logo=angular&logoColor=white)](https://angular.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Status: Completed](https://img.shields.io/badge/Status-Completed_%E2%9C%85-success)](https://github.com/)
+
+---
 
 Welcome to the **Week 1 Capstone Project** for the **Nexa Solutions Internship Program**. This capstone unites everything learned across Week 1: fundamental C# logic, Object-Oriented Programming, generic collections with LINQ, exception handling, and an interactive Angular/TypeScript frontend.
 
