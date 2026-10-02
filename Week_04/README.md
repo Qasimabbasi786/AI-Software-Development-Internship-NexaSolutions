@@ -82,3 +82,11 @@ For all operations during Week 4, use the following verified toolchain paths:
 | **Part C** | `feature/ai-fastapi-service` | FastAPI AI microservice with `/health` and `/summarize` Pydantic models and Swagger interactive docs. |
 | **Part D & E**| `feature/prompt-engineering` | LLM conversation memory, streaming, resilient JSON parsing, few-shot prompt templates, and prompt injection defense. |
 | **Part F** | `chore/pull-request-template` | GitHub PR template (`.github/PULL_REQUEST_TEMPLATE.md`), merge conflict resolution demo, and branch protection setup. |
+
+---
+
+## 👤 Author
+
+- **Name:** Muhammad Qasim  
+- **Internship:** AI Software Development Internship (.NET + Angular + AI)
+

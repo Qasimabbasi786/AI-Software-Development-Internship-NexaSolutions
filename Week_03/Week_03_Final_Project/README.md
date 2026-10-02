@@ -92,3 +92,11 @@ cd Week_03/Week_03_Final_Project/ai-services
 & "D:\Software\PythonEnvironments\AI_env\Scripts\python.exe" summarize_book.py "Nuskha-Hai-Wafa" "Faiz Ahmed Faiz poetry collection covering themes of love, struggle, and justice."
 ```
 
+---
+
+## 👤 Author
+
+- **Name:** Muhammad Qasim  
+- **Internship:** AI Software Development Internship (.NET + Angular + AI)
+
+

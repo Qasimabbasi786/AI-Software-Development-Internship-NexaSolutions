@@ -285,3 +285,11 @@ npm start
 2. **CORS Security**: Cross-Origin Resource Sharing is explicitly configured in .NET Core to allow requests from the Angular development origin.
 3. **Dual-Mode Reactive Forms**: A single `BookFormComponent` handles both creation and updates using route parameter detection and `patchValue()`.
 4. **Resilient Error Logging**: Frontend HTTP subscriptions capture and log network or validation errors without breaking the UI state.
+
+---
+
+## 👤 Author
+
+- **Name:** Muhammad Qasim  
+- **Internship:** AI Software Development Internship (.NET + Angular + AI)
+

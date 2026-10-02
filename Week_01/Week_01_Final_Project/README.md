@@ -262,3 +262,11 @@ By completing this capstone project, interns have demonstrated:
 3. Leveraging declarative querying (LINQ & Array filters) in place of procedural loops.
 4. Architecting clean component boundaries using `@Input()` and `@Output()` in modern Angular.
 5. Delivering a responsive, professional user interface with high aesthetic polish.
+
+---
+
+## 👤 Author
+
+- **Name:** Muhammad Qasim  
+- **Internship:** AI Software Development Internship (.NET + Angular + AI)
+

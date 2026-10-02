@@ -163,4 +163,9 @@ cd "Week_04/Week_04_Final_Project/ai-services"
 - **Git Hygiene:** Clean commit logs, complete documentation, and zero commit leakage of build binaries (`bin/`, `obj/`, `node_modules/`, secrets).
 
 ---
-*Maintained by **Muhammad Qasim** | Nexa Solutions AI Software Development Internship.*
+
+## 👤 Author
+
+- **Name:** Muhammad Qasim  
+- **Internship:** AI Software Development Internship (.NET + Angular + AI)
+

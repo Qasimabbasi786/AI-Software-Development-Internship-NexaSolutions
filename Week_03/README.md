@@ -89,3 +89,11 @@ git commit -m "feat: complete all Week 3 tasks including AI Python scripts and r
 git tag -a v0.3-week3 -m "Week 3 Completed: EF Core, PostgreSQL, Angular integration, and AI script"
 git push origin main --tags
 ```
+
+---
+
+## 👤 Author
+
+- **Name:** Muhammad Qasim  
+- **Internship:** AI Software Development Internship (.NET + Angular + AI)
+

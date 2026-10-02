@@ -110,3 +110,11 @@ cd "Week_04/Week_04_PartC_FastAPIService"
 & "D:\Software\PythonEnvironments\AI_env\Scripts\python.exe" -m uvicorn main:app --reload --port 8000
 # Interactive Swagger Docs: http://localhost:8000/docs
 ```
+
+---
+
+## 👤 Author
+
+- **Name:** Muhammad Qasim  
+- **Internship:** AI Software Development Internship (.NET + Angular + AI)
+

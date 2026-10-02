@@ -115,3 +115,11 @@ By completing Week 1, interns have developed proficiency in:
 3. **Declarative Data Processing**: Replacing manual loops with declarative query pipelines using C# LINQ and TypeScript Array operators (`filter`, `map`, `reduce`).
 4. **Architectural Separation**: Decoupling domain entities, manager services, and presentation components.
 5. **Modern Reactive Frontends**: Structuring Angular standalone components using `@Input()`, `@Output()`, two-way binding (`[(ngModel)]`), and glassmorphic UI design.
+
+---
+
+## 👤 Author
+
+- **Name:** Muhammad Qasim  
+- **Internship:** AI Software Development Internship (.NET + Angular + AI)
+

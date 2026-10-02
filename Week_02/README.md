@@ -118,3 +118,11 @@ By completing Week 2, interns have demonstrated:
 3. **Multi-Tiered Backend Systems**: Structuring backend applications using Controller-Service-Repository tiers for testability and maintainability.
 4. **Enterprise Form UX**: Building robust Reactive Forms with synchronous validators, contextual error messaging, and dual-mode Create/Edit logic.
 5. **Cross-Origin Client-Server Communication**: Configuring CORS policies in ASP.NET Core and consuming endpoints via Angular's `HttpClient`.
+
+---
+
+## 👤 Author
+
+- **Name:** Muhammad Qasim  
+- **Internship:** AI Software Development Internship (.NET + Angular + AI)
+

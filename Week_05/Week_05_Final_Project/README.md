@@ -148,3 +148,11 @@ The **Week 5 Final Project** integrates the entire week's learnings into an end-
 - [x] Step 5: Verified source attribution list for all in-catalog answers.
 - [x] Step 6: Documented full end-to-end data flow with architecture diagrams in README.
 - [x] Step 7: Completed Git PR merges across all feature branches and tagged milestone `v0.5-week5`.
+
+---
+
+## 👤 Author
+
+- **Name:** Muhammad Qasim  
+- **Internship:** AI Software Development Internship (.NET + Angular + AI)
+
