@@ -1,0 +1,102 @@
+[
+  {
+    "id": "book_101",
+    "text": "Title: Designing Data-Intensive Applications: The Big Ideas Behind Reliable, Scalable, and Maintainable Systems\nAuthor: Martin Kleppmann\nCategory: Tech / Software Engineering\nDescription: Key architectural guide exploring data storage engines, replication algorithms, partitioning, atomic transactions, stream processing pipelines with Apache Kafka, and consensus protocols in distributed computing systems.",
+    "metadata": {
+      "title": "Designing Data-Intensive Applications",
+      "author": "Martin Kleppmann",
+      "category": "Tech / Software Engineering",
+      "source": "Designing Data-Intensive Applications"
+    }
+  },
+  {
+    "id": "book_102",
+    "text": "Title: Clean Architecture: A Craftsman's Guide to Software Structure and Design\nAuthor: Robert C. Martin (Uncle Bob)\nCategory: Tech / Software Engineering\nDescription: Comprehensive patterns on decoupling business rules from frameworks, databases, and UI layers using SOLID principles, dependency inversion, component cohesion, and hexagonal architecture patterns.",
+    "metadata": {
+      "title": "Clean Architecture",
+      "author": "Robert C. Martin",
+      "category": "Tech / Software Engineering",
+      "source": "Clean Architecture"
+    }
+  },
+  {
+    "id": "book_103",
+    "text": "Title: Building Microservices: Designing Fine-Grained Systems\nAuthor: Sam Newman\nCategory: Tech / Software Engineering\nDescription: Practical guide to distributed microservice architectures, domain-driven service decomposition, asynchronous messaging, API gateways, database decomposition patterns, resilience engineering, and observable telemetry.",
+    "metadata": {
+      "title": "Building Microservices",
+      "author": "Sam Newman",
+      "category": "Tech / Software Engineering",
+      "source": "Building Microservices"
+    }
+  },
+  {
+    "id": "book_104",
+    "text": "Title: Raja Gidh (The Vulture King)\nAuthor: Bano Qudsia\nCategory: Urdu Novels\nDescription: A monumental psychological and philosophical Urdu novel exploring socio-moral values, spiritual disintegration, illegal means of sustenance (rizq-e-haram), and the profound emotional consequences of unrestrained human desires through allegorical storytelling.",
+    "metadata": {
+      "title": "Raja Gidh",
+      "author": "Bano Qudsia",
+      "category": "Urdu Novels",
+      "source": "Raja Gidh"
+    }
+  },
+  {
+    "id": "book_105",
+    "text": "Title: Peer-e-Kamil (The Perfect Mentor)\nAuthor: Umera Ahmed\nCategory: Urdu Novels\nDescription: A widely acclaimed modern Urdu literary masterpiece chronicling the transformative spiritual journeys of Imama Hashim and Salar Sikandar, depicting personal redemption, unshakeable faith, and the quest for existential guidance.",
+    "metadata": {
+      "title": "Peer-e-Kamil",
+      "author": "Umera Ahmed",
+      "category": "Urdu Novels",
+      "source": "Peer-e-Kamil"
+    }
+  },
+  {
+    "id": "book_106",
+    "text": "Title: Jannat Kay Pattay (Leaves of Heaven)\nAuthor: Nemrah Ahmed\nCategory: Urdu Novels\nDescription: A suspenseful and spiritually awakening Urdu novel centering on Haya Suleman, a law student studying in Turkey who navigates intrigue, espionage, personal growth, modesty, and divine trials with unwavering resilience.",
+    "metadata": {
+      "title": "Jannat Kay Pattay",
+      "author": "Nemrah Ahmed",
+      "category": "Urdu Novels",
+      "source": "Jannat Kay Pattay"
+    }
+  },
+  {
+    "id": "book_107",
+    "text": "Title: The Reluctant Fundamentalist\nAuthor: Mohsin Hamid\nCategory: Pakistani Literature\nDescription: An international bestselling novella presented as an elegant dramatic monologue in Lahore, reflecting on cultural identity, corporate ambition on Wall Street, post-9/11 geopolitical tensions, and the dualities of immigrant life.",
+    "metadata": {
+      "title": "The Reluctant Fundamentalist",
+      "author": "Mohsin Hamid",
+      "category": "Pakistani Literature",
+      "source": "The Reluctant Fundamentalist"
+    }
+  },
+  {
+    "id": "book_108",
+    "text": "Title: Moth Smoke\nAuthor: Mohsin Hamid\nCategory: Pakistani Literature\nDescription: A poignant contemporary novel exploring Lahore during the nuclear tests of 1998, delving into friendship, social disparities, moral conflicts, and economic decay through the shifting voice of its protagonist Darashikoh Shezad.",
+    "metadata": {
+      "title": "Moth Smoke",
+      "author": "Mohsin Hamid",
+      "category": "Pakistani Literature",
+      "source": "Moth Smoke"
+    }
+  },
+  {
+    "id": "book_109",
+    "text": "Title: A Case of Exploding Mangoes\nAuthor: Mohammed Hanif\nCategory: Pakistani Literature\nDescription: A razor-sharp political satire and dark comedy investigating the mysterious plane crash of General Zia-ul-Haq, interweaving military conspiracies, mango crates, and bureaucratic absurdities in 1980s Pakistan.",
+    "metadata": {
+      "title": "A Case of Exploding Mangoes",
+      "author": "Mohammed Hanif",
+      "category": "Pakistani Literature",
+      "source": "A Case of Exploding Mangoes"
+    }
+  },
+  {
+    "id": "book_110",
+    "text": "Title: Aab-e-Hayat (Elixir of Life)\nAuthor: Umera Ahmed\nCategory: Urdu Novels\nDescription: The profound sequel to Peer-e-Kamil following the mature lives of Salar and Imama, exploring financial ethics, interest-free economic ideals, marital harmony, philanthropic commitments, and social justice in contemporary society.",
+    "metadata": {
+      "title": "Aab-e-Hayat",
+      "author": "Umera Ahmed",
+      "category": "Urdu Novels",
+      "source": "Aab-e-Hayat"
+    }
+  }
+]
