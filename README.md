@@ -99,7 +99,7 @@ All Week Tasks Sol/
     ├── Week_05_PartA_Embeddings/             # Gemini text-embedding-004, Cosine Similarity & semantic search
     ├── Week_05_PartB_VectorDatabases/        # ChromaDB collections, L2 distance & metadata filtering
     ├── Week_05_PartC_RAGPipeline/            # Manual 8-stage RAG pipeline (chunking to source attribution)
-    ├── Week_05_PartD_Evaluation/             # RAG evaluation suite, chunk trade-offs & hit rate metrics
+    ├── Week_05_PartD_RAGEvaluation/          # RAG evaluation suite, chunk trade-offs & hit rate metrics
     ├── Week_05_PartE_FastAPIAsk/             # FastAPI microservice exposing grounded /ask endpoint
     ├── Week_05_PartF_GitRevert/              # Safe commit rollback walkthroughs using git revert
     └── Week_05_Final_Project/                # Library Knowledge Assistant & catalog grounding test suite

@@ -44,7 +44,7 @@ This repository contains the complete implementation for **Week 5: Retrieval-Aug
 | **`Week_05_PartA_Embeddings/`** | Google Gemini `text-embedding-004` vector representations, Cosine Similarity, and top-$k$ semantic search rankings. |
 | **`Week_05_PartB_VectorDatabases/`** | ChromaDB collection indexing, L2 distance queries, and compound `$and` metadata filtering. |
 | **`Week_05_PartC_RAGPipeline/`** | Manual 8-stage RAG pipeline with chunking, retrieval, prompt assembly, and hallucination guardrails. |
-| **`Week_05_PartD_Evaluation/`** | Quantitative RAG evaluation framework measuring chunk size trade-offs and hit rate @ $k$. |
+| **`Week_05_PartD_RAGEvaluation/`** | Quantitative RAG evaluation framework measuring chunk size trade-offs and hit rate @ $k$. |
 | **`Week_05_PartE_FastAPIAsk/`** | FastAPI microservice exposing `/ask` with Pydantic validation, CORS, error handling, and citations. |
 | **`Week_05_PartF_GitRevert/`** | Git revert documentation and safe commit rollback walkthroughs. |
 | **`Week_05_Final_Project/`** | End-to-end Library Assistant CLI & grounding test suite over persistent catalog vectors. |
@@ -79,7 +79,7 @@ python Week_05_PartC_RAGPipeline/rag_pipeline.py
 
 #### Part D: RAG Quality & Evaluation Suite
 ```bash
-python Week_05_PartD_Evaluation/rag_evaluation.py
+python Week_05_PartD_RAGEvaluation/rag_evaluation.py
 ```
 
 #### Part E: FastAPI /ask Microservice
