@@ -15,13 +15,21 @@ The **Week 5 Final Project** integrates the entire week's learnings into an end-
 
 ```
  ┌────────────────────────────────────────────────────────┐
- │   Custom Library Corpus / .NET API (GET /api/books)    │
- │   10 Diverse Books (Tech, Pakistani Lit, Urdu Novels)  │
+ │   PostgreSQL Database (librarydb_week3 @ localhost)    │
+ │   Single Source of Truth for Books Catalog             │
+ └───────────────────────────┬────────────────────────────┘
+                             │ Live Catalog Data
+                             ▼
+ ┌────────────────────────────────────────────────────────┐
+ │   .NET 8 Web API (GET http://localhost:5000/api/books) │
+ │   Public Endpoint serving Library Records              │
  └───────────────────────────┬────────────────────────────┘
                              │
                              ▼
  ┌────────────────────────────────────────────────────────┐
- │   Ingestion Pipeline (ingest_corpus.py)                │
+ │   Python Corpus Ingestion (fetch_corpus / ingest)      │
+ │   - Fetches live books from .NET API (/api/books)      │
+ │   - Fallback to 10 rich books (Tech, Urdu, Pakistani)  │
  │   - chunk_text(chunk_size=350, overlap=40)             │
  │   - Generates Embeddings (Google Gemini / Local)       │
  └───────────────────────────┬────────────────────────────┘
@@ -43,7 +51,7 @@ The **Week 5 Final Project** integrates the entire week's learnings into an end-
                 ▼                           │
  ┌────────────────────────────────────────────────────────┐
  │   Grounding & Inference Engine (Google Gemini)         │
- │   - Strictly constrained prompt                            │
+ │   - Strictly constrained prompt                        │
  │   - Adheres to: "I don't have that information."       │
  └──────────────┬─────────────────────────────────────────┘
                 │
@@ -56,7 +64,7 @@ The **Week 5 Final Project** integrates the entire week's learnings into an end-
 
 > [!NOTE]
 > **Data Flow Progression:**  
-> `Custom Corpus / .NET API -> Ingestion Script -> ChromaDB -> /ask Endpoint -> Gemini LLM -> Answer + Sources`
+> `PostgreSQL (librarydb_week3) -> .NET API (/api/books) -> Python Corpus Script -> ChromaDB -> /ask Endpoint -> Gemini LLM -> Answer + Sources`
 
 ---
 
@@ -68,6 +76,7 @@ The **Week 5 Final Project** integrates the entire week's learnings into an end-
 | **[`fetch_corpus.py`](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_05/Week_05_Final_Project/fetch_corpus.py)** | Queries `.NET API` `GET /api/books`, formats structured book records into documents with offline fallback. |
 | **[`ingest_corpus.py`](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_05/Week_05_Final_Project/ingest_corpus.py)** | Dedicated ingestion pipeline reading `corpus.json`, chunking text, generating embeddings, and storing in `library_rag_final`. |
 | **[`vector_store.py`](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_05/Week_05_Final_Project/vector_store.py)** | Persistent Chroma collection manager for indexing and querying top-k relevant chunks. |
+| **[`rag_pipeline.py`](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_05/Week_05_Final_Project/rag_pipeline.py)** | Complete end-to-end RAG pipeline orchestration module (Chunking, Embedding, Chroma `library_rag_final`, Gemini). |
 | **[`main.py`](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_05/Week_05_Final_Project/main.py)** | FastAPI application providing `POST /ask`, `GET /health`, and `POST /reindex` with Pydantic validation & CORS. |
 | **[`test_grounding.py`](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_05/Week_05_Final_Project/test_grounding.py)** | Automated verification test suite executing 3 in-catalog queries and 1 out-of-catalog negative check. |
 | **[`interactive_ask.py`](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_05/Week_05_Final_Project/interactive_ask.py)** | Interactive CLI allowing developers and mentors to ask arbitrary questions directly to the assistant. |
