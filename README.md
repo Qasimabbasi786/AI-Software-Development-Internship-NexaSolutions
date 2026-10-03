@@ -109,36 +109,45 @@ All Week Tasks Sol/
 
 ## ⚡ Quick Execution Guidelines
 
-### 1. Launching .NET Backend Applications
-```bash
-# Example: Week 4 Secured Library API
-cd "Week_04/Week_04_Final_Project/backend"
-& "D:\Software\dotnet\dotnet.exe" restore
-& "D:\Software\dotnet\dotnet.exe" run
-# Access interactive Swagger UI at http://localhost:5000/swagger
-```
-
-### 2. Launching Angular Frontend Clients
-```bash
-# Example: Week 4 Secured Angular Client
-cd "Week_04/Week_04_Final_Project/frontend"
-npm install
-npm start
-# Access interactive application at http://localhost:4200/
-```
-
-### 3. Launching FastAPI AI Microservice
+### 1. Launching FastAPI AI Microservice (Port 8000)
 ```powershell
-# Example: Week 4 Final Project AI Microservice
-cd "Week_04/Week_04_Final_Project/ai-services"
+# Navigate to Week 6 Final Project AI Microservice
+cd "Week_06/Week_06_Final_Project/ai-services"
 
-# Activate dedicated virtual environment and launch uvicorn
+# Launch FastAPI with uvicorn (LangChain LCEL RAG + SSE Streaming)
 & "D:\Software\PythonEnvironments\AI_env\Scripts\python.exe" -m uvicorn main:app --reload --port 8000
 # Access interactive OpenAPI Swagger UI at http://localhost:8000/docs
 ```
 
+### 2. Launching .NET 8 Backend API & Streaming Proxy (Port 5000)
+```powershell
+# Navigate to Week 6 Final Project backend
+cd "Week_06/Week_06_Final_Project/backend"
+
+# Restore & run ASP.NET Core API with Polly Resilience & SSE Proxy
+& "D:\Software\dotnet\dotnet.exe" build
+& "D:\Software\dotnet\dotnet.exe" run --urls "http://localhost:5000"
+# Access interactive Swagger UI at http://localhost:5000
+```
+
+### 3. Launching Angular 18 Frontend Client with Streaming Drawer (Port 4200)
+```bash
+# Navigate to Week 6 Final Project frontend
+cd "Week_06/Week_06_Final_Project/frontend"
+
+# Launch Angular development server
+npm start
+# Access interactive web application at http://localhost:4200/
+```
+
+### 4. Running the Comprehensive Automated Verification Suite
+```powershell
+# Run all automated tests (Input guard, multi-turn memory, tool calling, SSE streaming)
+& "D:\Software\PythonEnvironments\AI_env\Scripts\python.exe" "Week_06/Week_06_Final_Project/test_week6_suite.py"
+```
+
 > [!NOTE]
-> **Architectural Independence Note:** In Week 4, the .NET Web API and the FastAPI AI microservice operate as independent microservices. The direct Angular → .NET API → FastAPI AI integration pipeline will be connected in Week 6 after RAG and vector embeddings are integrated in Week 5.
+> **Full-Stack Integrated Architecture Note:** In Week 6, the entire system is fully connected end-to-end: the Angular client communicates through the resilient ASP.NET Core gateway (`/api/assistant/ask/stream`), which proxies Server-Sent Events from the FastAPI microservice (`/ask/stream`), rendering live Google Gemini tokens dynamically into the chat UI.
 
 ---
 
