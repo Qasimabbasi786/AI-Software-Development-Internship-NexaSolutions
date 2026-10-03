@@ -1,0 +1,35 @@
+<div class="app-layout">
+  <nav class="navbar">
+    <div class="nav-brand">
+      📚 <span>Library Management Portal</span>
+    </div>
+    <div class="nav-links">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Book Catalog</a>
+      
+      <!-- Only show Add Book button in Navbar if user is logged in and has Admin role -->
+      <a *ngIf="authService.isAdmin()" routerLink="/add-book" routerLinkActive="active">+ Add Book</a>
+
+      <!-- Authentication State Links -->
+      <ng-container *ngIf="!authService.isLoggedIn()">
+        <a routerLink="/login" routerLinkActive="active" class="login-link">Sign In</a>
+      </ng-container>
+
+      <ng-container *ngIf="authService.isLoggedIn()">
+        <span class="user-greeting">
+          👤 <strong>{{ authService.getUsername() }}</strong> 
+          <span class="role-badge" [class.admin-badge]="authService.isAdmin()">
+            {{ authService.getUserRole() }}
+          </span>
+        </span>
+        <button class="logout-nav-btn" (click)="logout()">Sign Out</button>
+      </ng-container>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Live Streaming AI Assistant Component -->
+  <app-chat-assistant></app-chat-assistant>
+</div>
