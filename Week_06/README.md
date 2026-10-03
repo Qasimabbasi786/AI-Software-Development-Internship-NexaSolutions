@@ -1,6 +1,6 @@
 # 🤖 Enterprise AI Assistant Microservice (LangChain LCEL, Tools & Streaming)
 
-**Author:** Fawad  
+**Author:** Muhammad Qasim  
 **Program:** AI Software Development Internship (.NET + Angular + AI)  
 **Milestone:** Week 6 — LangChain & LCEL • Advanced Retrieval • Tool Calling • Polly Resilience • SSE Streaming  
 
@@ -9,12 +9,13 @@
 [![LangChain](https://img.shields.io/badge/LangChain-LCEL_Pipelines-1C3C3C?logo=langchain&logoColor=white)](https://www.langchain.com/)
 [![Streaming: SSE](https://img.shields.io/badge/Streaming-Server--Sent_Events-FF5722)](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)
 [![Resilience: Polly](https://img.shields.io/badge/Resilience-Polly_C%23_Integration-4CAF50)](https://github.com/App-vNext/Polly)
+[![Google Gemini](https://img.shields.io/badge/AI_Engine-Google_Gemini-4285F4?logo=google&logoColor=white)](https://ai.google.dev/)
 
 ---
 
 ## 🌟 Overview
 
-This repository represents the production-ready AI assistant service built during **Week 6**. It transitions basic RAG pipelines into a composable, streaming, and tool-augmented intelligence system capable of dynamic runtime database inspections, multi-turn conversational context resolution, and high-throughput token streaming.
+This repository represents the production-ready AI assistant service built during **Week 6**. Building upon the manual 8-stage RAG pipeline from Week 5, this milestone transitions our system into an enterprise composable, streaming, and tool-augmented intelligence platform capable of dynamic runtime database inspections, multi-turn conversational context resolution, and high-throughput Server-Sent Events (SSE) token streaming.
 
 ```
                   ┌────────────────────────────────────────────────────────┐
@@ -47,84 +48,72 @@ This repository represents the production-ready AI assistant service built durin
 
 | Directory / File | Description |
 | :--- | :--- |
-| **`Week6_PartA_LangChainLCEL/`** | Declarative LCEL RAG chain using `|`, `RunnablePassthrough`, and `RunnableLambda` input guards. |
-| **`Week6_PartB_AdvancedRetrieval/`** | Hierarchical document chunking and `MultiQueryRetriever` query reformulation. |
-| **`Week6_PartC_StructuredMemory/`** | Multi-tenant session memory management and Pydantic structured output validation. |
-| **`Week6_PartD_ToolCalling/`** | Autonomous tool binding (`@tool check_book_availability`) with schema execution. |
-| **`Week6_PartE_ResilientNetAI/`** | .NET 8 C# client implementation featuring Polly jittered exponential backoff and circuit breakers. |
-| **`Week6_PartF_Streaming/`** | Server-Sent Events (SSE) streaming protocols and token generator specifications. |
-| **`Week6_PartG_GitRebase/`** | Git rebase documentation, linear commit history maintenance, and conflict resolution guides. |
-| **`Week6_Project_FullAssistant/`** | End-to-end interactive CLI assistant and comprehensive verification test suite. |
-| **`ai-service/`** | Production FastAPI backend microservice exposing `/ask`, `/ask/stream`, and `/classify-book`. |
-| **`Week6_CheckStage_Answers.md`** | Comprehensive architectural and theoretical answers to all Week 6 assessment questions. |
+| **`Week_06_PartA_LCEL/`** | Declarative LCEL RAG chain using `|`, `RunnablePassthrough`, and `RunnableLambda` input guards. |
+| **`Week_06_PartB_AdvancedRetrieval/`** | Hierarchical document chunking with `RecursiveCharacterTextSplitter` and `MultiQueryRetriever`. |
+| **`Week_06_PartC_StructuredMemory/`** | Multi-turn session memory with `RunnableWithMessageHistory` and Pydantic structured output validation. |
+| **`Week_06_PartD_ToolCalling/`** | Autonomous tool binding (`@tool check_book_availability`) with schema execution against .NET API. |
+| **`Week_06_PartE_ResilientNetAI/`** | .NET 8 C# resilient client featuring Polly exponential backoff, timeouts, and circuit breakers. |
+| **`Week_06_PartF_Streaming/`** | Tri-layer Server-Sent Events (SSE) streaming blueprint across FastAPI, .NET proxy, and Angular. |
+| **`Week_06_PartG_GitRebase/`** | Interactive git rebase practice, history hygiene, and safe remote synchronization guides. |
+| **`Week_06_Final_Project/`** | Full-stack production application connecting Angular UI, .NET proxy, and FastAPI AI service. |
 
 ---
 
 ## 🚀 Quickstart & Execution
 
-### 1. Setup Virtual Environment
-```bash
-python -m venv .venv
-# Windows PowerShell
-.venv\Scripts\Activate.ps1
-
-# Install dependencies
-pip install -r requirements.txt
+### 1. Configure Local Environment (`.env`)
+Each subfolder includes its own isolated `.env` template configured for Google Gemini:
+```env
+GEMINI_API_KEY=your_actual_gemini_api_key_here
+GEMINI_MODEL=gemini-3.5-flash-lite
+GEMINI_EMBEDDING_MODEL=models/gemini-embedding-001
 ```
 
-### 2. Start the AI Microservice
-```bash
-cd ai-service
-uvicorn main:app --reload --port 8000
-```
-- **Interactive Swagger Documentation:** `http://localhost:8000/docs`
-- **Health Check:** `http://localhost:8000/health`
-
-### 3. Run Module Demos
+### 2. Run Module Demos
 
 #### Part A: LCEL Declarative Pipeline
 ```bash
-python Week6_PartA_LangChainLCEL/lcel_rag_demo.py
+python Week_06_PartA_LCEL/lcel_rag_demo.py
 ```
 
 #### Part B: Multi-Query Advanced Retrieval
 ```bash
-python Week6_PartB_AdvancedRetrieval/advanced_retrieval_demo.py
+python Week_06_PartB_AdvancedRetrieval/advanced_retrieval_demo.py
 ```
 
 #### Part C: Structured Memory & Session Store
 ```bash
-python Week6_PartC_StructuredMemory/structured_memory_demo.py
+python Week_06_PartC_StructuredMemory/structured_memory_demo.py
 ```
 
 #### Part D: Dynamic Tool Calling
 ```bash
-python Week6_PartD_ToolCalling/tool_calling_demo.py
+python Week_06_PartD_ToolCalling/tool_calling_demo.py
 ```
 
-#### Full Verification Test Suite
+#### Project: Automated Verification Test Suite
 ```bash
-python Week6_Project_FullAssistant/test_week6_suite.py
+python Week_06_Final_Project/test_week6_suite.py
 ```
 
-#### Interactive Terminal Assistant
+#### Project: Interactive Terminal Streaming Chat
 ```bash
-python Week6_Project_FullAssistant/interactive_client.py
+python Week_06_Final_Project/interactive_client.py
 ```
 
 ---
 
-## ⚡ Key Capabilities
+## ⚡ Key Architectural Capabilities
 
-- **LCEL Pipe Composition:** Clean, modular chaining without procedural glue code.
-- **Dynamic Tool Calling:** The AI autonomously decides when to query live databases for book inventory rather than hallucinating.
-- **Stateful Memory Isolation:** Safe multi-user multi-turn dialogue keyed by unique `session_id`.
-- **Live SSE Token Streaming:** Near-instant time-to-first-token (TTFT) via Server-Sent Events.
-- **Enterprise Resilience:** Polly exponential backoff with decorrelated jitter and circuit breaking for mission-critical reliability.
+- **LCEL Pipe Composition:** Clean, modular chaining without procedural glue code using `RunnableSequence` (`|`).
+- **Dynamic Tool Calling:** The AI autonomously queries the live PostgreSQL database via .NET `GET /api/books/{id}/availability` instead of hallucinating.
+- **Stateful Memory Isolation:** Safe multi-turn dialogue with pronoun resolution keyed by unique `session_id`.
+- **Live SSE Token Streaming:** Low time-to-first-token (TTFT) via unbuffered Server-Sent Events from FastAPI through .NET to Angular.
+- **Enterprise Resilience:** Polly exponential backoff with circuit breaking for 503 fallback when downstream AI services degrade.
 
 ---
 
 ## 👤 Author
 
-- **Name:** Fawad  
+- **Name:** Muhammad Qasim  
 - **Internship:** AI Software Development Internship (.NET + Angular + AI)

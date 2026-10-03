@@ -1,7 +1,14 @@
-# Week 3 Final Project — Backend API Service (`libraryAPI`)
-### Enterprise ASP.NET Core 8 Web API + PostgreSQL + EF Core
+# Week 6 Final Project — Backend API Service (`libraryAPI`)
+### Enterprise ASP.NET Core 8 Web API + PostgreSQL + Polly Resilience + SSE Streaming Proxy
 
-Welcome to the backend service for the **Week 3 Final Project** in the **Nexa Solutions AI Software Development Internship Program**. This service transitions our Week 2 in-memory architecture into a production-grade, relational-database-backed RESTful API leveraging **Entity Framework Core 8** and **PostgreSQL (`librarydb_week3`)**.
+**Author:** Muhammad Qasim  
+**Program:** AI Software Development Internship (.NET + Angular + AI)  
+**Milestone:** Week 6 Final Project — Resilient Gateway & Streaming Proxy  
+
+[![.NET: 8.0](https://img.shields.io/badge/.NET-8.0_Web_API-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL_16-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Polly](https://img.shields.io/badge/Resilience-Polly_C%23-4CAF50)](https://github.com/App-vNext/Polly)
+[![Status: Completed](https://img.shields.io/badge/Status-Completed_%E2%9C%85-success)](https://github.com/)
 
 ---
 
@@ -13,30 +20,25 @@ Welcome to the backend service for the **Week 3 Final Project** in the **Nexa So
                      ▼
 ┌────────────────────────────────────────────────────────┐
 │            Controllers (Presentation Layer)            │
-│  - BooksController: CRUD endpoints                     │
-│  - AuthController: Login / Register skeleton           │
+│  - BooksController: CRUD + /availability endpoint      │
+│  - AssistantController: /ask & /ask/stream proxy       │
+│  - AuthController: JWT Authentication & User Claims    │
 └──────────────────────────┬─────────────────────────────┘
-                           │ Dependency Injection
-                           ▼
-┌────────────────────────────────────────────────────────┐
-│            Repositories (Data Access Layer)            │
-│  - IBookRepository & BookRepository                    │
-│  - Asynchronous LINQ queries with EF Core              │
-└──────────────────────────┬─────────────────────────────┘
-                           │ Entity Framework Core 8
-                           ▼
-┌────────────────────────────────────────────────────────┐
-│               LibraryDbContext (ORM Session)           │
-│  - Authors, Books, Categories, BookCategories, Users   │
-│  - Dynamically configured via secure local .env        │
-└──────────────────────────┬─────────────────────────────┘
-                           │ Npgsql Driver
-                           ▼
-┌────────────────────────────────────────────────────────┐
-│               PostgreSQL Database                      │
-│  - Database: librarydb_week3 (localhost:5432)          │
-│  - Tables: "Books", "Authors", "Categories", "Users"   │
-└────────────────────────────────────────────────────────┘
+                           │
+       ┌───────────────────┴───────────────────┐
+       ▼                                       ▼
+┌──────────────────────────────┐ ┌──────────────────────────────┐
+│  Repositories & Data Layer   │ │ Resilient Polly HTTP Client  │
+│  - IBookRepository           │ │  - Typed IAiServiceClient    │
+│  - LibraryDbContext (EF Core)│ │  - Exponential Retry (3x)    │
+│  - PostgreSQL (5432)         │ │  - Circuit Breaker (30s break│
+└──────────────────────────────┘ └─────────────┬────────────────┘
+                                               │ HTTP / SSE Stream
+                                               ▼
+                                 ┌──────────────────────────────┐
+                                 │ FastAPI AI Service (:8000)   │
+                                 │ LangChain LCEL RAG + Gemini  │
+                                 └──────────────────────────────┘
 ```
 
 ---
@@ -46,75 +48,53 @@ Welcome to the backend service for the **Week 3 Final Project** in the **Nexa So
 ```
 backend/
 ├── Controllers/
-│   ├── BooksController.cs         # RESTful HTTP endpoints for Books
-│   └── AuthController.cs          # Login & registration skeleton endpoints
+│   ├── AssistantController.cs     # Resilient proxy for /ask & /ask/stream (SSE)
+│   ├── BooksController.cs         # RESTful CRUD + GET /api/books/{id}/availability
+│   └── AuthController.cs          # JWT login & registration endpoints
 ├── Data/
 │   └── LibraryDbContext.cs        # EF Core DbContext with relationship mappings
 ├── Models/
+│   ├── Book.cs                    # Book entity with IsAvailable boolean
 │   ├── Author.cs                  # Author entity (1:N with Book)
-│   ├── Book.cs                    # Book entity (N:1 Author, M:N Category)
-│   ├── Category.cs                # Category entity
+│   ├── Category.cs                # Category taxonomy entity
 │   ├── BookCategory.cs            # Junction join entity
-│   └── User.cs                    # Lightweight user auth skeleton entity
+│   └── User.cs                    # User auth credentials entity
 ├── Repositories/
 │   ├── IBookRepository.cs         # Repository contract abstraction
-│   └── BookRepository.cs          # EF Core implementation with PostgreSQL
-├── Properties/
-│   └── launchSettings.json        # Configured for Port 5000 (HTTP)
-├── .env.example                   # Non-sensitive environment variable template
-├── appsettings.json               # Logging and core framework settings
-└── Program.cs                     # Startup configuration, CORS, and .env parser
+│   └── BookRepository.cs          # EF Core asynchronous data access methods
+├── Services/
+│   ├── IAiServiceClient.cs        # Typed client interface & DTOs
+│   └── AiServiceClient.cs         # HttpClient proxy calling upstream FastAPI
+├── appsettings.json               # Application settings
+├── libraryAPI.csproj              # Project dependencies including Polly
+└── Program.cs                     # DI container, JWT auth, and Polly policies
 ```
 
 ---
 
-## 🔒 Environment Configuration (`.env`)
+## 🔑 Key Capabilities Mastered
 
-To protect credentials from source control, database secrets are read dynamically from `.env` in the backend root:
+1. **Book Availability Tool Endpoint:**
+   - Public endpoint `GET /api/books/{id}/availability` querying the `IsAvailable` flag in PostgreSQL for dynamic LangChain tool execution.
+2. **Polly Resilience Policies:**
+   - **Retry Policy:** Exponential backoff with 3 retry attempts for transient HTTP faults.
+   - **Circuit Breaker Policy:** Breaks after 3 consecutive failures for 30 seconds, returning an immediate `503 Service Unavailable` response.
+3. **End-to-End SSE Streaming Proxy:**
+   - `POST /api/assistant/ask/stream` forwards live tokens from FastAPI directly to the client.
+   - Leverages `HttpCompletionOption.ResponseHeadersRead` and `await Response.Body.FlushAsync()` to prevent internal socket buffering.
 
-```env
-POSTGRES_HOST=localhost
-POSTGRES_PORT=5432
-POSTGRES_DB=librarydb_week3
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=your_actual_password_here
+---
+
+## 🚀 Execution Guide
+
+```powershell
+# 1. Navigate to backend directory
+cd "Week_06/Week_06_Final_Project/backend"
+
+# 2. Build the project
+& "D:\Software\dotnet\dotnet.exe" build
+
+# 3. Run the API on port 5000
+& "D:\Software\dotnet\dotnet.exe" run --urls "http://localhost:5000"
 ```
-
-A template file [`.env.example`](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_03/Week_03_Final_Project/backend/.env.example) is committed to Git while `.env` is protected via `.gitignore`.
-
----
-
-## 📡 API Endpoints
-
-### Books API (`/api/books`)
-| Method | Endpoint | Description | Status Codes |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/books` | Fetch all books with authors | `200 OK` |
-| `GET` | `/api/books/{id}` | Fetch book by primary key ID | `200 OK`, `404 Not Found` |
-| `POST` | `/api/books` | Create new book in PostgreSQL | `201 Created`, `400 Bad Request` |
-| `PUT` | `/api/books/{id}` | Update existing book entity | `204 No Content`, `404 Not Found` |
-| `DELETE`| `/api/books/{id}` | Delete book from database | `204 No Content`, `404 Not Found` |
-
-### Auth Skeleton API (`/api/auth`)
-| Method | Endpoint | Description | Status Codes |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/api/auth/register` | Register new user in Users table | `200 OK`, `400 Bad Request` |
-| `POST` | `/api/auth/login` | Validate user credentials skeleton | `200 OK`, `401 Unauthorized` |
-
----
-
-## 🚀 How to Run & Verify
-
-1. **Restore & Build**:
-   ```bash
-   dotnet restore
-   dotnet build
-   ```
-
-2. **Run Server**:
-   ```bash
-   dotnet run
-   ```
-
-3. **Explore via Swagger**:
-   Open browser at `http://localhost:5000` to interact with Swagger UI.
+- **Swagger Documentation:** `http://localhost:5000`
