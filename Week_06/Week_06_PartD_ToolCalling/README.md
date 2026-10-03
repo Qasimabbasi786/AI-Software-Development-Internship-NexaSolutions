@@ -1,6 +1,6 @@
 # Week 6 — Part D: Tool Calling with LangChain & .NET Endpoint
 
-## 🌟 Overview
+## 📌 Executive Summary
 Static RAG vector stores only contain historical context and cannot answer real-time questions about transactional state (such as whether a book is checked out or available right now).
 
 **Tool Calling** enables the model to:
@@ -23,89 +23,60 @@ Static RAG vector stores only contain historical context and cannot answer real-
    │  - Autonomously determines tool necessity              │
    └──────────────────────────┬─────────────────────────────┘
                               │
-                              ▼ Returns ToolCall schema:
-                              │ {"name": "check_book_availability", "args": {"book_id": 4}}
-                              │
-   ┌──────────────────────────┴─────────────────────────────┐
-   │            Application Tool Execution Step             │
-   │                                                        │
-   │  GET http://localhost:5000/api/books/4/availability    │
-   │  -> Calls .NET 8 Web API / EF Core PostgreSQL          │
-   │  -> Returns: {"bookId": 4, "isAvailable": true}        │
+               Tool Call Needed?
+              ┌───────────────┴───────────────┐
+              │ Yes                           │ No (General Q)
+              ▼                               ▼
+   ┌──────────────────────────┐    ┌──────────────────────────┐
+   │ Returns Tool Call Object │    │ Direct Generation Answer │
+   │ name: check_availability │    └──────────────────────────┘
+   │ args: {"book_id": 4}     │
+   └──────────┬───────────────┘
+              │
+              ▼
+   ┌────────────────────────────────────────────────────────┐
+   │      Execute Tool: GET /api/books/4/availability       │
+   │      Result: "Dune (ID 4) is currently AVAILABLE"      │
    └──────────────────────────┬─────────────────────────────┘
                               │
-                              ▼ ToolMessage(content="Available to borrow")
-                              │
-   ┌──────────────────────────┴─────────────────────────────┐
-   │             Model Synthesis Round-Trip                 │
-   │                                                        │
-   │  Input: [HumanMessage, AIMessage(ToolCall), ToolMsg]   │
-   │  Output: "Yes, book 4 (Dune) is currently available    │
-   │           to borrow."                                  │
+                              ▼ ToolMessage(content=...)
+   ┌────────────────────────────────────────────────────────┐
+   │      Final LLM Synthesis (Natural Response)            │
+   │ "Yes! Dune is currently available on the shelf."       │
    └────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🔍 Tool Calling vs. Manual Function Execution
+## 🔑 Core Concepts Mastered
 
-| Feature | Manual Programmatic Function Call | LangChain Autonomous Tool Calling |
-| :--- | :--- | :--- |
-| **Decision Maker** | The developer hardcodes `if "available" in query: check()` | The LLM decides dynamically based on context, semantics, and tool descriptions. |
-| **Argument Extraction** | Brittle regex parsing to extract book IDs from unstructured text | Native JSON argument extraction matching the function's type annotations (`book_id: int`). |
-| **Multi-Turn Synthesis** | Code must assemble a template string manually | Model receives tool output as context and crafts an empathetic, natural-sounding response. |
+### 1. The `@tool` Decorator
+```python
+@tool
+def check_book_availability(book_id: int) -> str:
+    """
+    Check whether a specific library book (by its numeric ID) is currently available to borrow.
+    Always use this tool when the user asks about availability, checkout status, or borrowing state.
+    """
+    ...
+```
+Docstrings and type hints serve as the LLM's system prompt instructions explaining when and how to call the function.
+
+### 2. Binding Tools to Models
+```python
+model_with_tools = llm.bind_tools([check_book_availability])
+```
+Attaches OpenAPI-style JSON schemas to Gemini API requests.
+
+### 3. Tool Execution Round-Trip
+Feeding the tool result back into the prompt history as a `ToolMessage` gives the model the factual grounding needed to generate a clean final answer.
 
 ---
 
-## 💻 .NET 8 Availability Endpoint
-The .NET backend in `Week_06_Final_Project/backend` exposes:
-- **Endpoint:** `GET /api/books/{id}/availability`
-- **Controller Action:** [BooksController.cs](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_06/Week_06_Final_Project/backend/Controllers/BooksController.cs)
-- **Response Format:**
-  ```json
-  {
-    "bookId": 4,
-    "isAvailable": true,
-    "title": "Dune"
-  }
+## 🛠️ Implementation Details (`tool_calling_demo.py`)
+
+- **Backend Integration:** Calls .NET endpoint `GET /api/books/{id}/availability` with local catalog fallback.
+- **Verification Command:**
+  ```bash
+  python Week_06_PartD_ToolCalling/tool_calling_demo.py
   ```
-
----
-
-## 📊 Live Verification Output
-
-```text
-==================================================================
- WEEK 6 PART D: LANGCHAIN TOOL CALLING & .NET AVAILABILITY DEMO
- Active Model Provider: ChatGoogleGenerativeAI
-==================================================================
-
-[Test 1] User asks: 'Is book 4 available right now to borrow?'
-  [+] Model Decision: Live tool invocation required!
-      - Tool requested: check_book_availability
-      - Tool arguments: {'book_id': 4}
-      - Execution Output: "Book 'Dune' (ID: 4) is currently Available to borrow."
-
-  [Synthesized Final Answer]:
-  Yes, book 4 (*Dune*) is currently available to borrow.
-
-[Test 2] User asks: 'What genre is Dune?'
-  [+] Model Decision: Answer directly from knowledge base (Zero tool calls required).
-  [Direct Answer]:
-  *Dune*, written by Frank Herbert and published in 1965, is widely considered a masterpiece of science fiction...
-
-[Test 3] User asks: 'Can I borrow book 2 today?'
-  [+] Tool result: "Book 'Designing Data-Intensive Applications' (ID: 2) is currently Checked out / borrowed."
-  [Synthesized Final Answer]:
-  No, book 2 ("Designing Data-Intensive Applications") is currently checked out and not available to borrow today.
-```
-
----
-
-## 🚀 Execution
-
-Run the Part D demonstration using the active virtual environment:
-
-```powershell
-& "D:\Software\PythonEnvironments\AI_env\Scripts\python.exe" tool_calling_demo.py
-```

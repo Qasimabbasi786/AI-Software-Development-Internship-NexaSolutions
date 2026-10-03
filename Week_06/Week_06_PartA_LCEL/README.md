@@ -1,6 +1,6 @@
 # Week 6 — Part A: LangChain Fundamentals & LCEL
 
-## 🌟 Overview
+## 📌 Executive Summary
 LangChain Expression Language (LCEL) standardizes models, prompts, retrievers, and parsers behind common `Runnable` interfaces composed with the declarative pipe operator (`|`).
 
 This module implements:
@@ -58,54 +58,44 @@ This module implements:
                                          │  Returns: str
                                          ▼
                       ┌──────────────────────────────────────┐
-                      │  Final Clean Text Response           │
+                      │  Final Clean Natural Language Answer │
                       └──────────────────────────────────────┘
 ```
 
 ---
 
-## 🔍 Data Type Tracing Specification
+## 🔑 Core Concepts Mastered
 
-| Step | Component / Stage | Input Type | Output Type | Responsibility |
-| :--- | :--- | :--- | :--- | :--- |
-| **0** | Caller Input | `dict` | `dict` | `{"question": "Which books are science fiction in the catalog?"}` |
-| **1** | `RunnableLambda(guard_short_questions)` | `dict` | `dict` | Validates question length >= 3 characters. Rejects `?` or `hi` with `ValueError`. |
-| **2a**| `retriever_runnable` | `dict` or `str` | `list[Document]` | Retrieves matching catalog documents based on keyword/semantic matches. |
-| **2b**| `format_docs` | `list[Document]` | `str` | Formats extracted documents into a delimited context string. |
-| **2c**| `RunnablePassthrough` | `dict` | `str` | Extracts and forwards original `question` string unchanged. |
-| **2d**| Parallel Dict Step Output | N/A | `dict` | Maps to `{"context": str, "question": str}` matching prompt variables. |
-| **3** | `ChatPromptTemplate` | `dict` | `PromptValue` | Formats systemic and human messages with contextual slots. |
-| **4** | `ChatGoogleGenerativeAI` | `PromptValue` | `AIMessage` | Executes Gemini LLM inference and produces AIMessage chunk. |
-| **5** | `StrOutputParser` | `AIMessage` | `str` | Extracts string content, stripping extra metadata envelopes. |
+### 1. Unified Runnable Protocol
+Every component implements standard methods:
+- `invoke()`: Synchronous processing.
+- `ainvoke()`: Asynchronous processing.
+- `stream()`: Synchronous token streaming.
+- `astream()`: Asynchronous token streaming.
+- `batch()`: Parallel batch evaluation.
+
+### 2. Composable Pipe Syntax (`|`)
+Instead of nesting functions like `parser(model(prompt(input)))`, LCEL chains them sequentially:
+```python
+chain = (
+    RunnableLambda(guard_short_questions)
+    | {"context": retriever | format_docs, "question": RunnablePassthrough()}
+    | prompt
+    | model
+    | StrOutputParser()
+)
+```
+
+### 3. Early Failure & Input Guarding
+By placing `RunnableLambda(guard_short_questions)` at the start of the sequence, empty or sub-3-character inputs fail fast before incurring latency, database lookups, or API usage costs.
 
 ---
 
-## 🛡️ Input Guard Verification & Stack Trace Analysis
+## 🛠️ Implementation Details (`lcel_rag_demo.py`)
 
-When invoking the chain with an invalid query (such as `{"question": "?"}`), the exception is intercepted at **Step 1** before reaching the retriever or LLM:
-
-```text
-Traceback (most recent call last):
-  File "lcel_rag_demo.py", line 137, in run_lcel_demo
-    chain.invoke({"question": "?"})
-  File "langchain_core/runnables/base.py", line 2875, in invoke
-    input = step.invoke(input, config, **kwargs)
-  File "lcel_rag_demo.py", line 36, in guard_short_questions
-    raise ValueError(f"InputGuard: Question '{question}' is too short (< 3 chars) to answer meaningfully.")
-ValueError: InputGuard: Question '?' is too short (< 3 chars) to answer meaningfully.
-```
-
-### Why LCEL Input Guards Outperform Ad-Hoc Application Logic:
-1. **Zero Resource Wastage:** Expensive vector database queries and LLM API roundtrips are completely bypassed.
-2. **Framework Composability:** The guard is an intrinsic step in the `RunnableSequence`, meaning it runs automatically whether invoked via `.invoke()`, `.stream()`, or `.batch()`.
-3. **Decoupled Business Logic:** The guard function remains a pure, testable Python function without depending on external web controllers.
-
----
-
-## 🚀 Execution
-
-Run the demo using the active Python environment:
-
-```powershell
-& "D:\Software\PythonEnvironments\AI_env\Scripts\python.exe" lcel_rag_demo.py
-```
+- **Model Factory:** `model_factory.py` loads `GEMINI_API_KEY` from local `.env` and defaults to `gemini-3.5-flash-lite`.
+- **Offline Deterministic Fallback:** Automatically activated if no API keys are present.
+- **Verification Command:**
+  ```bash
+  python Week_06_PartA_LCEL/lcel_rag_demo.py
+  ```

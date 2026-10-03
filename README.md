@@ -11,7 +11,9 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![ChromaDB](https://img.shields.io/badge/Vector_DB-ChromaDB-FF6F00?logo=chroma&logoColor=white)](https://www.trychroma.com/)
 [![Google Gemini](https://img.shields.io/badge/AI_Engine-Google_Gemini-4285F4?logo=google&logoColor=white)](https://ai.google.dev/)
-[![Milestone: Week 5 Done](https://img.shields.io/badge/Progress-Week_5_Completed_%E2%9C%85-success)](https://github.com/)
+[![Milestone: Week 6 Done](https://img.shields.io/badge/Progress-Week_6_Completed_%E2%9C%85-success)](https://github.com/)
+[![LangChain](https://img.shields.io/badge/Orchestrator-LangChain_LCEL-1C3C3C?logo=langchain&logoColor=white)](https://www.langchain.com/)
+[![Resilience: Polly](https://img.shields.io/badge/Resilience-Polly_C%23-4CAF50)](https://github.com/App-vNext/Polly)
 
 ---
 
@@ -36,11 +38,12 @@ Welcome to the central repository for the **Nexa Solutions AI Software Developme
 │ Backend & APIs      │ Frontend & UI     │ Persistence  │ AI & Tooling  │
 ├─────────────────────┼───────────────────┼──────────────┼───────────────┤
 │ • .NET 8 / 9 SDK    │ • Angular 18/19/22│ • PostgreSQL │ • Python 3.11+│
-│ • C# 12 (Modern)    │ • TypeScript 5+   │ • EF Core 8  │ • NumPy/Pandas│
-│ • ASP.NET Core API  │ • Reactive Forms  │ • In-Memory  │ • REST/OpenAPI│
-│ • Controller-Service│ • RxJS Observables│ • Migrations │ • Swagger UI  │
-│   -Repository tier  │ • CSS Glassmorphic│ • Connection │ • Git Workflow│
-│ • LINQ & Generics   │   Modern Design   │   Pooling    │ • Node.js/npm │
+│ • C# 12 (Modern)    │ • TypeScript 5+   │ • EF Core 8  │ • LangChain   │
+│ • ASP.NET Core API  │ • Reactive Forms  │ • In-Memory  │ • LCEL & Chroma│
+│ • Polly Resilience  │ • RxJS Observables│ • Migrations │ • SSE Streaming│
+│ • Controller-Service│ • Native Fetch    │ • Connection │ • Swagger UI  │
+│   -Repository tier  │   ReadableStream  │   Pooling    │ • Git Rebase  │
+│ • LINQ & Generics   │ • CSS Modern UI   │              │ • Node.js/npm │
 └─────────────────────┴───────────────────┴──────────────┴───────────────┘
 ```
 
@@ -55,6 +58,7 @@ Welcome to the central repository for the **Nexa Solutions AI Software Developme
 | **[Week 03](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_03)** | **Enterprise Persistence, EF Core & Integration** | `Completed` ✅ | • Part A: PostgreSQL schema design, indexes, and queries.<br>• Part B: Entity Framework Core Code-First migrations & relations.<br>• Part C: Complete API integration with persistent storage.<br>• Part D: Authentication & Authorization architecture (JWT notes).<br>• Part E: Angular frontend client consuming persistent API.<br>• Parts F & G (Git Workflow & AI Scripts): Finalized and integrated into Capstone. |
 | **[Week 04](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_04)** | **JWT Auth (.NET + Angular) & FastAPI AI Microservice** | `Completed` ✅ | • Part A: Real JWT issuing, password hashing (`PasswordHasher<User>`), and role-based endpoint authorization.<br>• Part B: Angular `AuthService`, functional HTTP interceptor, and `authGuard`.<br>• Part C: FastAPI AI Microservice with Pydantic validations & OpenAPI docs.<br>• Part D & E: LLM APIs in depth (`google-genai` + `gemini-3.8-flash`, history, streaming, prompt injection defenses).<br>• Part F: Git merge conflict resolution, branch protection, & PR template.<br>• **Capstone:** Secured Library App + AI Microservice with Engineered Prompts. |
 | **[Week 05](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_05)** | **Embeddings, Vector Databases & Manual RAG Pipeline** | `Completed` ✅ | • Part A: Vector embeddings fundamentals, Cosine Similarity & top-$k$ semantic search.<br>• Part B: Local ChromaDB vector storage, collections & metadata filtering.<br>• Part C: Complete 8-stage manual RAG pipeline (chunking, embedding, storage, retrieval, context, generation, attribution).<br>• Part D: RAG quality evaluation, hallucination reduction & chunk trade-offs.<br>• Part E: FastAPI `/ask` endpoint wiring manual RAG pipeline.<br>• Part F: Safe Git commit undoing (`git revert`) on protected branches.<br>• **Capstone:** Library Knowledge Assistant with real .NET catalog corpus. |
+| **[Week 06](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_06)** | **LangChain LCEL, Tools, Polly & End-to-End Streaming** | `Completed` ✅ | • Part A: Declarative LCEL RAG chain (`\|`), `RunnablePassthrough` & input guards.<br>• Part B: `RecursiveCharacterTextSplitter` & `MultiQueryRetriever` with Gemini embeddings.<br>• Part C: Pydantic structured output (`BookAnswer`) & session memory (`RunnableWithMessageHistory`).<br>• Part D: Dynamic tool calling (`@tool check_book_availability`) with .NET availability endpoint.<br>• Part E: Production Polly resilience (retry, timeout, circuit breaker) in ASP.NET Core 8.<br>• Part F: Tri-layer Server-Sent Events (SSE) streaming architecture blueprint.<br>• Part G: Cleaning Git history with interactive rebase & `--force-with-lease`.<br>• **Capstone:** Fully Wired Library AI Assistant (.NET Proxy + FastAPI + Angular Streaming Drawer). |
 
 ---
 
@@ -68,55 +72,37 @@ All Week Tasks Sol/
 │   └── PULL_REQUEST_TEMPLATE.md              # Standardized GitHub Pull Request Template
 │
 ├── Week_01/                                  # WEEK 1: PROGRAMMING FOUNDATIONS
-│   ├── README.md                             # Week 1 Executive Summary
-│   ├── Week_01_PartA/                        # C# syntax, CLI, loops, calculator, FizzBuzz
-│   ├── Week_01_PartB/                        # OOP, inheritance, interfaces (IPrintable)
-│   ├── Week_01_PartC/                        # Collections, exceptions, and LINQ queries
-│   ├── Week_01_PartD/                        # Angular standalone basics & glassmorphic roster
-│   └── Week_01_Final_Project/                # Capstone: Student Management Suite (Console + Angular)
-│
 ├── Week_02/                                  # WEEK 2: STRUCTURED APIS & REACTIVE FORMS
-│   ├── README.md                             # Week 2 Executive Summary
-│   ├── Week_02_PartA/                        # Advanced C#, DIP, generics, async/await pipelines
-│   ├── Week_02_PartB/                        # ASP.NET Core API, HTTP codes, Swagger UI
-│   ├── Week_02_PartD/                        # Angular Reactive Forms, validation, RxJS state
-│   └── Week_02_Final_Project/                # Capstone: Library Management System
-│       ├── libraryAPI/                       # Tiered ASP.NET Core Web API (Port 5184)
-│       └── libraryFrontend/                  # Reactive Angular client with CRUD (Port 4200)
-│
 ├── Week_03/                                  # WEEK 3: PERSISTENCE, EF CORE & AI
-│   ├── Week_03_PartA_PostgreSQL/             # Relational database setup & SQL scripts
-│   ├── Week_03_PartB_EFCore/                 # EF Core DBContext, models, migrations
-│   ├── Week_03_PartC_API_Integration/        # Persistent API endpoints
-│   ├── Week_03_PartD_Auth_Notes/             # Security, JWT tokens, auth architecture
-│   ├── Week_03_PartE_Angular_Integration/    # Frontend integration with persistent database
-│   ├── Week_03_PartF_Git_Workflow/           # Branching strategies & CI/CD workflow
-│   ├── Week_03_PartG_AIScripts/              # Python AI scripts & data automation
-│   └── Week_03_Final_Project/                # Enterprise integrated capstone
-│
 ├── Week_04/                                  # WEEK 4: JWT AUTH & FASTAPI AI MICROSERVICE
-│   ├── README.md                             # Week 4 Executive Summary & Overview
-│   ├── Week_04_PartA_AuthBackend/            # ASP.NET Core JWT Auth, Password Hashing & Role Authorization
-│   ├── Week_04_PartB_AngularAuth/            # Angular Auth Integration (Service, Interceptor, Guards)
-│   ├── Week_04_PartC_FastAPIService/         # FastAPI AI Microservice with Pydantic Validations
-│   ├── Week_04_PartD_LLMAPIs/                # Google GenAI SDK Deep-Dive (Parameters, History, Streaming)
-│   ├── Week_04_PartE_PromptEngineering/      # Prompt Engineering, Few-Shot Templates & Injection Defense
-│   ├── Week_04_PartF_GitPractice/            # Merge Conflict Simulation & Branch Protection Setup
-│   └── Week_04_Final_Project/                # Capstone: Secured Library App + Independent AI Microservice
-│       ├── backend/                          # Secured ASP.NET Core 8 Web API (:5000)
-│       ├── frontend/                         # Role-Gated Angular 18/19 SPA (:4200)
-│       └── ai-services/                      # FastAPI AI Microservice with Engineered Prompts (:8000)
 │
-└── Week_05/                                  # WEEK 5: EMBEDDINGS, VECTOR DBS & MANUAL RAG (GEMINI)
-    ├── README.md                             # Week 5 Architecture & Guide (Google Gemini Standard)
-    ├── requirements.txt                      # Dependencies (chromadb, google-genai, fastapi, uvicorn, numpy)
-    ├── Week_05_PartA_Embeddings/             # Gemini text-embedding-004, Cosine Similarity & semantic search
-    ├── Week_05_PartB_VectorDatabases/        # ChromaDB collections, L2 distance & metadata filtering
-    ├── Week_05_PartC_RAGPipeline/            # Manual 8-stage RAG pipeline (chunking to source attribution)
-    ├── Week_05_PartD_RAGEvaluation/          # RAG evaluation suite, chunk trade-offs & hit rate metrics
-    ├── Week_05_PartE_FastAPIAsk/             # FastAPI microservice exposing grounded /ask endpoint
-    ├── Week_05_PartF_GitRevert/              # Safe commit rollback walkthroughs using git revert
-    └── Week_05_Final_Project/                # Library Knowledge Assistant & catalog grounding test suite
+├── Week_05/                                  # WEEK 5: EMBEDDINGS, VECTOR DBS & MANUAL RAG (GEMINI)
+│   ├── README.md                             # Week 5 Architecture & Guide (Google Gemini Standard)
+│   ├── requirements.txt                      # Dependencies (chromadb, google-genai, fastapi, uvicorn, numpy)
+│   ├── Week_05_PartA_Embeddings/             # Gemini text-embedding-004, Cosine Similarity & semantic search
+│   ├── Week_05_PartB_VectorDatabases/        # ChromaDB collections, L2 distance & metadata filtering
+│   ├── Week_05_PartC_RAGPipeline/            # Manual 8-stage RAG pipeline (chunking to source attribution)
+│   ├── Week_05_PartD_RAGEvaluation/          # RAG evaluation suite, chunk trade-offs & hit rate metrics
+│   ├── Week_05_PartE_FastAPIAsk/             # FastAPI microservice exposing grounded /ask endpoint
+│   ├── Week_05_PartF_GitRevert/              # Safe commit rollback walkthroughs using git revert
+│   └── Week_05_Final_Project/                # Library Knowledge Assistant & catalog grounding test suite
+│
+└── Week_06/                                  # WEEK 6: LANGCHAIN LCEL, TOOLS, POLLY & STREAMING
+    ├── README.md                             # Week 6 Full Architecture Blueprint & Executive Guide
+    ├── requirements.txt                      # Python dependencies (langchain, chromadb, fastapi, etc.)
+    ├── Week_06_PartA_LCEL/                   # LCEL composition, RunnableLambda guard & Model Factory
+    ├── Week_06_PartB_AdvancedRetrieval/      # RecursiveCharacterTextSplitter & MultiQueryRetriever
+    ├── Week_06_PartC_StructuredMemory/       # Structured output (BookAnswer) & session memory store
+    ├── Week_06_PartD_ToolCalling/            # Autonomous tool binding & .NET availability check
+    ├── Week_06_PartE_ResilientNetAI/         # Resilient C# client with Polly retry, timeout & circuit breaker
+    ├── Week_06_PartF_Streaming/              # Tri-layer Server-Sent Events (SSE) streaming specification
+    ├── Week_06_PartG_GitRebase/              # Interactive rebase practice & linear history hygiene guide
+    └── Week_06_Final_Project/                # Capstone: Fully Wired Library AI Assistant
+        ├── backend/                          # Resilient ASP.NET Core 8 Web API & Streaming Proxy (:5000)
+        ├── frontend/                         # Angular 18 Client with Streaming Chat Drawer (:4200)
+        ├── ai-services/                      # FastAPI Microservice with LCEL RAG & Tools (:8000)
+        ├── test_week6_suite.py               # Comprehensive automated verification test suite
+        └── interactive_client.py             # Interactive CLI live streaming test client
 ```
 
 ---

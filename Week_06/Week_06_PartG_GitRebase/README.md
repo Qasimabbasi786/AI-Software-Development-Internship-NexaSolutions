@@ -1,16 +1,7 @@
 # Week 6 — Part G: Git — Cleaning History with Interactive Rebase
 
-**Author:** Muhammad Qasim  
-**Program:** AI Software Development Internship (.NET + Angular + AI)  
-**Milestone:** Week 6 — Part G: Git Workflow Level-Up  
-
-[![Git](https://img.shields.io/badge/Git-Interactive_Rebase-F05032?logo=git&logoColor=white)](https://git-scm.com/)
-[![Status: Completed](https://img.shields.io/badge/Status-Completed_%E2%9C%85-success)](https://github.com/)
-
----
-
-## 🌟 Executive Summary
-Interactive rebase (`git rebase -i`) is an essential engineering practice for maintaining clean, readable, and professional commit histories before merging feature branches into production repositories. This module covers interactive rebasing techniques, squash workflows, branch safety rules, and conflict resolution protocols.
+## 📌 Executive Summary
+Interactive rebase (`git rebase -i`) is an essential engineering practice for maintaining clean, readable, and professional commit histories before merging feature branches into shared repositories. This module covers interactive rebasing techniques, squash workflows, branch safety rules, and conflict resolution protocols.
 
 For the comprehensive technical blueprint, interactive commands reference, and full step-by-step walkthrough, refer to:  
 👉 **[Comprehensive Git Rebase Guide (git_rebase_guide.md)](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_06/Week_06_PartG_GitRebase/git_rebase_guide.md)**

@@ -1,6 +1,6 @@
 # Week 6 — Part C: Structured Output & Conversation Memory
 
-## 🌟 Overview
+## 📌 Executive Summary
 In enterprise AI microservices, raw string generation and stateless HTTP requests are insufficient:
 1. **Unreliable String Scraping:** Relying on LLMs to return markdown or plain text and hoping custom regex or `json.loads` doesn't throw a parsing exception fails under production load.
 2. **Stateless Conversational Breakdown:** Multi-turn interactions require persistent history so users can ask contextual follow-up questions (e.g., *"Who is the author?"* or *"What genre is it?"*) without repeating previous context.
@@ -26,89 +26,61 @@ This module combines **Pydantic Structured Outputs (`with_structured_output`)** 
                                  ▼
         ┌────────────────────────────────────────────────────────┐
         │            ChatPromptTemplate Composition              │
-        │                                                        │
-        │  [SystemMessage]: "Expert Library Assistant..."        │
-        │  [MessagesPlaceholder]: (Turn 1 User + Turn 1 AI...)   │
-        │  [HumanMessage]: Current Question                      │
+        │  - System Prompt (Grounding & Directives)              │
+        │  - MessagesPlaceholder("history")                      │
+        │  - HumanMessage("{question}")                          │
         └────────────────────────┬───────────────────────────────┘
                                  │
                                  ▼
         ┌────────────────────────────────────────────────────────┐
-        │       Google Gemini (with_structured_output)           │
-        │                                                        │
-        │  Target Schema: class BookAnswer(BaseModel)            │
-        │  - answer: str                                         │
-        │  - confidence: Literal['high', 'medium', 'low']        │
-        │  - sources: list[str]                                  │
+        │       Google Gemini with_structured_output             │
+        │  - Enforces Pydantic BookAnswer schema                 │
+        │  - Validates answer, confidence, sources               │
         └────────────────────────┬───────────────────────────────┘
                                  │
                                  ▼
         ┌────────────────────────────────────────────────────────┐
-        │       Auto-Validated Pydantic Instance Output          │
-        │                                                        │
-        │  BookAnswer(                                           │
-        │    answer="Dune belongs to the science fiction genre.", │
-        │    confidence="high",                                  │
-        │    sources=["Dune"]                                    │
-        │  )                                                     │
+        │    Strongly Typed Output Object: BookAnswer            │
+        │    {                                                   │
+        │      answer: "Dune is a science fiction classic...",   │
+        │      confidence: "high",                               │
+        │      sources: ["Dune"]                                 │
+        │    }                                                   │
         └────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🔍 Why `with_structured_output` Outperforms Manual Prompting
+## 🔑 Core Concepts Mastered
 
-| Feature | Manual JSON Prompting (`json.loads`) | LangChain `with_structured_output` |
-| :--- | :--- | :--- |
-| **Output Guarantees** | Text output might contain markdown code blocks (````json ... ````), conversational chatter, or trailing commas. | Strictly enforced via schema binding and model function/tool calling protocol. |
-| **Parsing Failures** | High under load or with complex multi-paragraph answers. Throws `JSONDecodeError`. | Built-in retry/repair parsing logic; yields strongly-typed Pydantic model instances. |
-| **Type Validation** | Manual runtime validation needed for nested types, lists, and required keys. | Automatic Pydantic type validation and field documentation injection into model system prompts. |
+### 1. Pydantic Structured Output
+```python
+class BookAnswer(BaseModel):
+    answer: str = Field(description="Direct response to the question.")
+    confidence: str = Field(description="'high', 'medium', or 'low'.")
+    sources: List[str] = Field(description="Book titles referenced.")
 
----
-
-## 👥 Multi-Turn Session Memory Comparison
-
-We tested multi-turn follow-up queries across isolated user sessions:
-
-```text
-[Session A - Turn 1] Query: "Tell me about Dune"
-   Type:       BookAnswer
-   Answer:     Dune is a science fiction novel by Frank Herbert...
-   Confidence: high
-   Sources:    ['Dune']
-
-[Session A - Turn 2] Follow-up: "What genre is it?" (Same Session ID)
-   Type:       BookAnswer
-   Answer:     Dune is a science fiction novel.
-   Confidence: high
-   Sources:    ['Dune']
-   [+] Verification: The model resolved "it" directly to "Dune" via session history.
-
-[Session B - Turn 1] Query: "What genre is it?" (FRESH Session ID)
-   Type:       BookAnswer
-   Answer:     I do not know which book you are referring to. Could you please specify the title of the book you are asking about?
-   Confidence: low
-   Sources:    []
-   [+] Verification: Completely isolated from Session A; lacks prior turns, accurately requesting clarification.
+structured_llm = llm.with_structured_output(BookAnswer)
 ```
+Guarantees the model returns typed objects adhering strictly to schema rules.
 
----
-
-## ⚠️ Known Limitations: In-Memory Session Storage
-
-> [!WARNING]
-> **Production Note on `InMemoryChatMessageHistory`**:
-> The session store in this module uses an in-memory dictionary (`dict[str, BaseChatMessageHistory]`). 
-> - **Process Lifetime:** Any server restart, deployment, or auto-scaling worker recycle destroys all active session states.
-> - **Multi-Instance Scaling:** In a horizontally-scaled multi-container environment (Kubernetes / load-balanced FastAPI instances), requests from the same user hitting different nodes will fail to find prior turns.
-> - **Production Requirement:** In enterprise deployments, this dictionary must be swapped for persistent, centralized storage such as **Redis** (`RedisChatMessageHistory`), **PostgreSQL**, or **DynamoDB**.
-
----
-
-## 🚀 Execution
-
-Run the Part C demonstration using the active virtual environment:
-
-```powershell
-& "D:\Software\PythonEnvironments\AI_env\Scripts\python.exe" structured_memory_demo.py
+### 2. Session-Scoped Memory Isolation
+`RunnableWithMessageHistory` wraps an LCEL chain, resolving history dynamically via a factory function:
+```python
+def get_session_history(session_id: str) -> BaseChatMessageHistory:
+    if session_id not in session_store:
+        session_store[session_id] = InMemoryChatMessageHistory()
+    return session_store[session_id]
 ```
+Enables accurate pronoun resolution (*"What genre is it?"* $\rightarrow$ resolves *"it"* to the previously discussed book).
+
+---
+
+## 🛠️ Implementation Details (`structured_memory_demo.py`)
+
+- **Model:** Google Gemini (`gemini-3.5-flash-lite`).
+- **Memory Store:** In-memory dictionary store keyed by `session_id`.
+- **Verification Command:**
+  ```bash
+  python Week_06_PartC_StructuredMemory/structured_memory_demo.py
+  ```
