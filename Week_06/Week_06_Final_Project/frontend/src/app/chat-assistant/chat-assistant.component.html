@@ -1,0 +1,63 @@
+<!-- Floating Trigger Button -->
+<button class="chat-toggle-btn" (click)="toggleChat()" [attr.aria-label]="isOpen ? 'Close chat' : 'Open AI Assistant'">
+  <span *ngIf="!isOpen">🤖 Ask AI Assistant</span>
+  <span *ngIf="isOpen">✕ Close</span>
+</button>
+
+<!-- Chat Window Modal / Drawer -->
+<div class="chat-drawer" *ngIf="isOpen">
+  <!-- Header -->
+  <div class="chat-header">
+    <div class="header-info">
+      <div class="status-indicator"></div>
+      <div>
+        <h3>Library AI Assistant</h3>
+        <span class="subtitle">LangChain LCEL & Gemini • Live Streaming</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="action-btn" (click)="resetChat()" title="Reset session memory">🔄 New Session</button>
+      <button class="action-btn close-btn" (click)="toggleChat()" title="Close chat">✕</button>
+    </div>
+  </div>
+
+  <!-- Messages Scroll Area -->
+  <div class="chat-messages" #scrollContainer>
+    <div *ngFor="let msg of messages" [ngClass]="['message-bubble', msg.sender]">
+      <div class="avatar">
+        {{ msg.sender === 'user' ? '👤' : '🤖' }}
+      </div>
+      <div class="bubble-content">
+        <div class="sender-name">{{ msg.sender === 'user' ? 'You' : 'AI Assistant' }}</div>
+        <div class="message-text">
+          {{ msg.text }}
+          <span *ngIf="msg.isStreaming" class="streaming-cursor">▋</span>
+        </div>
+        <div class="timestamp">{{ msg.timestamp | date:'shortTime' }}</div>
+      </div>
+    </div>
+
+    <!-- Error notice -->
+    <div *ngIf="errorMessage" class="error-banner">
+      {{ errorMessage }}
+    </div>
+  </div>
+
+  <!-- Input Form -->
+  <form class="chat-input-form" (ngSubmit)="sendMessage()">
+    <input
+      type="text"
+      [(ngModel)]="userInput"
+      name="chatInput"
+      placeholder="Ask about books, genres, or check availability..."
+      [disabled]="isLoading"
+      autocomplete="off"
+    />
+    <button *ngIf="!isLoading" type="submit" [disabled]="!userInput.trim()" class="send-btn">
+      Send
+    </button>
+    <button *ngIf="isLoading" type="button" (click)="cancelStreaming()" class="cancel-btn" title="Cancel streaming">
+      ⏹ Stop
+    </button>
+  </form>
+</div>

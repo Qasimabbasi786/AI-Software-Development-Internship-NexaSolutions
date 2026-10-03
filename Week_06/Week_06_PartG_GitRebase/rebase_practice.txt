@@ -1,0 +1,5 @@
+# Interactive Rebase Simulation Test File
+Draft 1: initial wip
+Draft 2: added more logic
+Draft 3: fixed silly typo
+Draft 4: finalized production logic

@@ -1,0 +1,64 @@
+<div class="login-wrapper">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="icon-circle">🔐</div>
+      <h2>Welcome Back</h2>
+      <p>Sign in with your credentials to manage library books.</p>
+    </div>
+
+    <!-- Error Alert Banner -->
+    <div *ngIf="errorMessage" class="error-banner">
+      ⚠️ {{ errorMessage }}
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input
+          id="username"
+          type="text"
+          formControlName="username"
+          placeholder="e.g. admin or sam"
+          [class.invalid]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
+        />
+        <small *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched" class="field-error">
+          Valid username is required.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="••••••••"
+          [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+        />
+        <small *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="field-error">
+          Password must be at least 4 characters long.
+        </small>
+      </div>
+
+      <button type="submit" class="submit-btn" [disabled]="loginForm.invalid || isSubmitting">
+        <span *ngIf="!isSubmitting">Sign In</span>
+        <span *ngIf="isSubmitting">Authenticating...</span>
+      </button>
+    </form>
+
+    <div class="demo-hints">
+      <p class="hints-title">💡 Quick Test Credentials:</p>
+      <div class="hints-buttons">
+        <button type="button" class="hint-pill admin" (click)="fillQuickDemo('admin')">
+          Fill Admin Role
+        </button>
+        <button type="button" class="hint-pill user" (click)="fillQuickDemo('user')">
+          Fill User Role
+        </button>
+      </div>
+      <p class="hints-note">
+        *If users are not yet seeded, register them via Swagger or Auth API.
+      </p>
+    </div>
+  </div>
+</div>
