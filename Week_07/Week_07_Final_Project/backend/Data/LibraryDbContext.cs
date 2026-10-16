@@ -20,6 +20,7 @@ public class LibraryDbContext : DbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<Reservation> Reservations => Set<Reservation>();
     public DbSet<AgentThread> AgentThreads => Set<AgentThread>();
+    public DbSet<UserPreference> UserPreferences => Set<UserPreference>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -66,10 +67,14 @@ public class LibraryDbContext : DbContext
         modelBuilder.Entity<User>().ToTable("Users");
         modelBuilder.Entity<Reservation>().ToTable("Reservations");
         modelBuilder.Entity<AgentThread>().ToTable("AgentThreads");
+        modelBuilder.Entity<UserPreference>().ToTable("UserPreferences");
 
         // Index on IdempotencyKey for fast lookups and deduplication
         modelBuilder.Entity<Reservation>()
             .HasIndex(r => r.IdempotencyKey);
+
+        modelBuilder.Entity<UserPreference>()
+            .HasIndex(up => new { up.UserId, up.Key });
 
         // Composite Primary Key for BookCategory junction table
         modelBuilder.Entity<BookCategory>()
