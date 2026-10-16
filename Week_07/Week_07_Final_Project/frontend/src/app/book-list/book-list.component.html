@@ -1,0 +1,76 @@
+<div class="container">
+  <div class="header-section">
+    <div class="header-title-row">
+      <div>
+        <h2>Library Book Directory</h2>
+        <p>Manage, view, and organize all available books in the system backed by PostgreSQL.</p>
+      </div>
+      <!-- Add Book Button: Show ONLY for Admin users (Part B Requirement) -->
+      <button *ngIf="authService.isAdmin()" class="add-header-btn" (click)="navigateToAdd()">
+        + Add New Book
+      </button>
+    </div>
+  </div>
+
+  <!-- Role status notification banner -->
+  <div *ngIf="!authService.isLoggedIn()" class="info-banner">
+    ℹ️ You are browsing in <strong>Public Read-Only Mode</strong>. Sign in to add or manage books.
+  </div>
+  <div *ngIf="authService.isLoggedIn() && !authService.isAdmin()" class="info-banner member-banner">
+    👤 Signed in as <strong>{{ authService.getUsername() }}</strong> (Standard User). Admin rights are required to delete books.
+  </div>
+
+  <!-- Error State Alert -->
+  <div *ngIf="errorMessage" class="error-banner">
+    ⚠️ {{ errorMessage }}
+  </div>
+
+  <!-- Loading State Indicator -->
+  <div *ngIf="isLoading" class="loading-state">
+    ⏳ Loading books from database...
+  </div>
+
+  <div class="table-card" *ngIf="!isLoading">
+    <table class="styled-table" *ngIf="books.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Book Title</th>
+          <th>Author Name</th>
+          <th>Category / ISBN</th>
+          <th>Created At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let book of books">
+          <td><span class="badge">#{{ book.bookId || book.id }}</span></td>
+          <td><strong>{{ book.title }}</strong></td>
+          <td>{{ getAuthorName(book) }}</td>
+          <td><span class="category-tag">{{ book.category || book.isbn || 'Literature' }}</span></td>
+          <td>{{ book.createdAt | date:'mediumDate' }}</td>
+          <td class="btns-group">
+            <!-- Update button visible to logged in users -->
+            <button *ngIf="authService.isLoggedIn()" class="update-btn" (click)="updateBook(book.bookId || book.id)">
+              Update
+            </button>
+            
+            <!-- Delete button: strictly shown only for ADMIN role (Part B Requirement) -->
+            <button *ngIf="authService.isAdmin()" class="delete-btn" (click)="deleteBook(book.bookId || book.id)">
+              Delete
+            </button>
+
+            <!-- Read-only badge if unauthenticated -->
+            <span *ngIf="!authService.isLoggedIn()" class="view-only-text">
+              View Only
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="books.length === 0 && !errorMessage" style="text-align: center; padding: 40px; color: #64748b;">
+      No books currently found in the library database.
+    </div>
+  </div>
+</div>

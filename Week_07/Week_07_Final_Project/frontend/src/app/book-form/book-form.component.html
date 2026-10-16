@@ -1,0 +1,43 @@
+<div class="form-container">
+  <div class="form-card">
+    <!-- Dynamic Headings using Angular *ngIf -->
+    <div *ngIf="!isEditMode">
+      <h2>Add New Book</h2>
+      <p>Enter the book details to register it into the library system.</p>
+    </div>
+    <div *ngIf="isEditMode">
+      <h2>Update Book</h2>
+      <p>Update the book details to save it into the library system.</p>
+    </div>
+
+    <form [formGroup]="bookForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="title">Book Title</label>
+        <input id="title" type="text" formControlName="title" placeholder="e.g. C# Fundamentals">
+        <div *ngIf="bookForm.get('title')?.invalid && bookForm.get('title')?.touched" class="error-msg">
+          Title is required.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="author">Author Name</label>
+        <input id="author" type="text" formControlName="author" placeholder="e.g. Muhammad Qasim">
+        <div *ngIf="bookForm.get('author')?.invalid && bookForm.get('author')?.touched" class="error-msg">
+          Author is required.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="category">Category</label>
+        <input id="category" type="text" formControlName="category" placeholder="e.g. Programming">
+        <div *ngIf="bookForm.get('category')?.invalid && bookForm.get('category')?.touched" class="error-msg">
+          Category is required.
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="bookForm.invalid" class="submit-btn">
+        {{ isEditMode ? 'Update Book' : 'Save Book' }}
+      </button>
+    </form>
+  </div>
+</div>
