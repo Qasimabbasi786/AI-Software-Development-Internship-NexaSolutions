@@ -1,0 +1,51 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  dotnet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: Build .NET Projects
+        run: dotnet build --no-restore -c Release || dotnet build -c Release
+      - name: Run .NET Tests
+        run: dotnet test -c Release --verbosity normal
+
+  angular:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            Week_07/Week_07_Final_Project/frontend/package-lock.json
+      - name: Install Frontend Dependencies
+        working-directory: Week_07/Week_07_Final_Project/frontend
+        run: npm ci || npm install
+      - name: Build Angular App
+        working-directory: Week_07/Week_07_Final_Project/frontend
+        run: npm run build --if-present
+
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Python Dependencies & Test Tools
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f Week_07/requirements.txt ]; then pip install -r Week_07/requirements.txt; fi
+          pip install pytest pytest-asyncio respx httpx
+      - name: Run Pytest Deterministic Suite
+        run: pytest -q Week_07/

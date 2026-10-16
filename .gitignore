@@ -56,6 +56,9 @@ htmlcov/
 **/appsettings.Local.json
 *.pfx
 *.certificate
+*.sqlite
+*.sqlite3
+*.db
 
 # ------------------------------------------------------------------------------
 # 5. IDE, Editor & OS Specific Files
