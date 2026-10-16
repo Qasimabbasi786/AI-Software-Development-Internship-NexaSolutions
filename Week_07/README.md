@@ -40,8 +40,19 @@ Week_07/
 ├── Week_07_PartI_Ecosystem/               # MCP, Semantic Kernel, and local model analysis
 ├── Week_07_PartJ_CI_GitBisect/            # CI configuration verification, git bisect logs
 ├── Week_07_Final_Project/                 # Capstone end-to-end full-stack agent implementation
-│   ├── backend/                           # ASP.NET Core 8 Web API (Reservations, SSE runs, Rate limiting)
+│   ├── backend/                           # ASP.NET Core 8 Web API (Reservations, Preferences, Rate limiting)
+│   │   ├── Controllers/                   # Books, Auth, Assistant, Preferences
+│   │   ├── Data/                          # LibraryDbContext (Reservations, Threads, Preferences)
+│   │   ├── Models/                        # Entity models (Reservation, AgentThread, UserPreference, etc.)
+│   │   ├── Repositories/                  # BookRepository & abstraction
+│   │   └── Services/                      # AiServiceClient & abstraction
 │   ├── ai-services/                       # FastAPI + LangGraph Agent service with SQLite checkpointer
+│   │   ├── security/                      # Untrusted document wrapping, guardrails, red-team harness
+│   │   ├── agent_graph.py                 # Core state machine, router, subgraphs, HITL interrupt, retries
+│   │   ├── agent_tools.py                 # Pydantic-validated read/write tools & JWT forwarding
+│   │   ├── model_factory.py               # Multi-provider LLM factory (Gemini, OpenAI, Anthropic)
+│   │   ├── test_part_c.py                 # Part C router & re-planning verification suite
+│   │   └── test_part_d.py                 # Part D persistence & secret audit verification suite
 │   └── frontend/                          # Angular 17+ Chat & Agent timeline with HITL cards
 ├── requirements.txt                       # Python dependencies for Week 7
 └── README.md                              # This root guide
