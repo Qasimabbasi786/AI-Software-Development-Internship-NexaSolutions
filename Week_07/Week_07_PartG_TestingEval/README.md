@@ -1,13 +1,13 @@
-# Week 7 - Part G: Testing, Evaluation & Tracing
+# Week 7 — Part G: Testing, Evaluation & Tracing
 
-## Executive Summary & Architecture Blueprint
+## 📌 Executive Summary
 Part G establishes two fundamentally different testing disciplines:
-1. **Deterministic Testing**: Verifies components whose behavior is strictly reproducible and never calls an LLM (routing functions, retry thresholds, Pydantic boundaries, HTTP status code translation, ASP.NET Core endpoints).
+1. **Deterministic Testing**: Verifies components whose behavior is strictly reproducible with zero LLM API dependency (routing functions, retry thresholds, Pydantic boundaries, HTTP status code translation, ASP.NET Core endpoints).
 2. **Non-Deterministic Evaluation**: Evaluates stochastic model trajectories across 10 structured scenarios to establish reliable pass rates, token metrics, and latency budgets.
 
 ---
 
-## 1. Testing Architecture Overview
+## 🏗️ Architecture & Dual Testing Pipeline
 
 ```mermaid
 graph TD;
@@ -30,8 +30,42 @@ graph TD;
 
 ---
 
-## 2. Deliverables Summary
-- **Python Deterministic Suite**: [`ai-services/tests/test_deterministic_suite.py`](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_07/Week_07_Final_Project/ai-services/tests/test_deterministic_suite.py) (15 tests covering schema boundaries, respx HTTP mocking, and guardrail filters - all passing).
-- **.NET Integration Tests**: [`backend/tests/ReservationIntegrationTests.cs`](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_07/Week_07_Final_Project/backend/tests/ReservationIntegrationTests.cs) and [`CustomWebApplicationFactory.cs`](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_07/Week_07_Final_Project/backend/tests/CustomWebApplicationFactory.cs) (testing 401s, idempotency, and SQLite in-memory isolation).
-- **Evaluation Runner**: [`ai-services/tests/eval_suite.py`](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_07/Week_07_Final_Project/ai-services/tests/eval_suite.py) (benchmarking pass rates across 10 scenarios).
-- **Official Evaluation Report**: Complete analysis and metrics matrix documented in [`docs/week7-eval-report.md`](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_07/docs/week7-eval-report.md).
+## 🔑 Core Concepts Mastered
+
+### 1. Deterministic vs Non-Deterministic Testing
+
+| Testing Tier | Technology | Execution Trigger | API Key Required? | Purpose |
+| :--- | :--- | :--- | :---: | :--- |
+| **Python Unit/Mock Suite** | `pytest`, `respx` | Every Commit / PR | **No** (Mocked) | Pydantic boundaries, secret sanitization, error mapping. |
+| **.NET Integration Suite**| `xUnit`, `WebApplicationFactory` | Every Commit / PR | **No** (In-Memory DB) | JWT auth claims, idempotency key replays, 404 isolation. |
+| **LLM Evaluation Matrix** | Python Evaluation Suite | Nightly / Release Gate | **Yes** (Google Gemini) | 10-scenario trajectory accuracy, token usage, latency. |
+| **Agent Observability** | LangSmith | Continuous Staging | **Yes** (LangSmith) | Visual node execution trees, failure and re-plan traces. |
+
+### 2. 10-Scenario Evaluation Matrix Summary
+- Full benchmark matrix documented in [`docs/week7-eval-report.md`](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_07/docs/week7-eval-report.md).
+- Verified trajectory compliance across Happy Path, 409 Conflict Re-planning, User Rejection handling, Prompt Injections, and Chitchat routing.
+
+---
+
+## 🛠️ Implementation Details & Commands
+
+- **Python Deterministic Suite (15 tests):**
+  ```bash
+  D:\Software\PythonEnvironments\AI_env\Scripts\python.exe -m pytest Week_07_Final_Project/ai-services/tests/test_deterministic_suite.py
+  ```
+- **.NET Integration Suite (9 tests):**
+  ```bash
+  D:\Software\dotnet\dotnet.exe test Week_07_Final_Project/backend/tests/libraryAPI.Tests.csproj
+  ```
+- **Automated Evaluation Suite:**
+  ```bash
+  D:\Software\PythonEnvironments\AI_env\Scripts\python.exe Week_07_PartG_TestingEval/eval_suite.py
+  ```
+
+---
+
+## ✅ Verification Checklist
+- [x] 15/15 deterministic pytest tests passing in < 3s without external API dependencies.
+- [x] 9/9 backend xUnit integration tests passing on in-memory SQLite.
+- [x] 10-scenario trajectory evaluation executed across repeated runs.
+- [x] LangSmith tracing configuration established for pass and conflict re-plan runs.

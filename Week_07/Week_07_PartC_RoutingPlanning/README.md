@@ -1,12 +1,16 @@
-# Week 7 - Part C: Routing, Planning & Retry Workflows
+# Week 7 — Part C: Routing, Planning & Retry Workflows
 
-## Executive Summary & Architecture Blueprint
-Part C introduces **dynamic query triage**, **subgraph composition**, and **stateful fault recovery**:
+## 📌 Executive Summary
+Part C establishes **dynamic query triage**, **subgraph composition**, and **stateful fault recovery**:
 1. **Low-Latency Structured Intent Routing**: Fast classification into `catalog`, `action`, or `chitchat` using Pydantic `with_structured_output` and Literal types.
 2. **Catalog Subgraph Embedding**: Encapsulating the rich retrieval pipeline from Week 6 as an independent compiled LangGraph node.
-3. **Plan-then-Execute & Re-Planning (Challenge 1)**: Handling 409 Conflict (`already reserved`) by dynamically catching `ERROR_FINAL` and executing a catalog search for available genre alternatives without user intervention.
-4. **Typed Retries with Exponential Backoff (Challenge 2)**: Retrying transient errors (`ERROR_RETRYABLE`) up to `MAX_RETRIES = 2` with backoff, while preventing bug-prone retries on final errors.
-5. **Generalized Prompt Engineering (Challenge 3)**: Eliminating intent ambiguity between subjective recommendations and catalog queries.
+3. **Plan-then-Execute & Re-Planning**: Handling 409 Conflict (`already reserved`) by dynamically catching `ERROR_FINAL` and executing a catalog search for available genre alternatives without user intervention.
+4. **Typed Retries with Exponential Backoff**: Retrying transient errors (`ERROR_RETRYABLE`) up to `MAX_RETRIES = 2` with backoff, while preventing bug-prone retries on final errors.
+5. **Generalized Prompt Engineering**: Eliminating intent ambiguity between subjective recommendations and catalog queries.
+
+---
+
+## 🏗️ Architecture & Graph Topology
 
 ```mermaid
 graph TD;
@@ -38,7 +42,9 @@ graph TD;
 
 ---
 
-## 1. 15-Message Router Classification Benchmark
+## 🔑 Core Concepts Mastered
+
+### 1. 15-Message Router Classification Benchmark
 Evaluated live against `RouteClassification(route: Literal["catalog", "action", "chitchat"], reasoning: str)`:
 
 | # | User Test Message | Expected Category | Model Classification | Result | Reasoning Provided |
@@ -63,7 +69,7 @@ Evaluated live against `RouteClassification(route: Literal["catalog", "action", 
 
 ---
 
-## 2. Challenge 1: 409 Conflict Re-planning Trace
+### 2. Autonomous 409 Conflict Re-planning
 When the reservation endpoint returns `409 Conflict` (book already reserved), the tool returns structured data:
 ```text
 ERROR_FINAL: book ID 4 is already reserved.
@@ -75,20 +81,26 @@ ERROR_FINAL: book ID 4 is already reserved.
 
 ---
 
-## 3. Challenge 2: Transient Failures & Idempotency Guarantees
+### 3. Transient Failures & Idempotency Guarantees
 - **Transient Failures (`ERROR_RETRYABLE`)**: Network timeouts and 503/504 gateway timeouts are retried up to `MAX_RETRIES = 2` with exponential backoff (`0.5s * (retries + 1)`).
-- **Why Retrying Write Actions is Safe**: Retrying a `reserve_book` call is **only safe because of the Idempotency-Key header** implemented in Part B (`{key}:{book_id}`). If the first request reached the database but timed out on return, the subsequent retry with the same key returns the existing reservation without creating a duplicate record or decrementing inventory twice.
-- **Final Errors (`ERROR_FINAL`)**: 401 Unauthorized, 403 Forbidden, 404 Not Found, and 409 Conflict are **never retried**. Retrying a 409 is a bug because the book will remain reserved; retrying a 401 is a bug because permissions will not change without a new token.
+- **Safe Write Retries**: Retrying a `reserve_book` call is **only safe because of the Idempotency-Key header** implemented in Part B (`{key}:{book_id}`). If the first request reached the database but timed out on return, the subsequent retry with the same key returns the existing reservation without duplicate records.
+- **Final Errors (`ERROR_FINAL`)**: 401 Unauthorized, 403 Forbidden, 404 Not Found, and 409 Conflict are **never retried**.
 
 ---
 
-## 4. Challenge 3: Eliminating Routing Ambiguity
-- **Ambiguous Case**: Queries like *"Is Dune any good?"* can be misclassified as casual opinion talk (`chitchat`) or catalog lookup (`catalog`).
-- **Resolution**: Rather than hardcoding phrase matches, we refined the router system prompt to clearly define `catalog` as covering any subjective appraisals, reviews, themes, and recommendations regarding books. This generalizes cleanly across all literary titles without special-casing individual queries.
+## 🛠️ Implementation Details (`test_part_c.py`)
+
+- **Routing & Re-planning Test Harness:** [`Week_07_PartC_RoutingPlanning/test_part_c.py`](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_07/Week_07_PartC_RoutingPlanning/test_part_c.py)
+- **Central Capstone Module:** [`Week_07_Final_Project/ai-services/agent_graph.py`](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_07/Week_07_Final_Project/ai-services/agent_graph.py)
+- **Verification Command:**
+  ```bash
+  python Week_07_PartC_RoutingPlanning/test_part_c.py
+  ```
 
 ---
 
-## 5. Runtime Code Location
-All production code for Part C is implemented and integrated in:
-- Master Graph & Routing: [`Week_07_Final_Project/ai-services/agent_graph.py`](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem\Week_wise_sol\All Week Tasks Sol\Week_07\Week_07_Final_Project\ai-services\agent_graph.py)
-- Automated Test Suite: [`Week_07_Final_Project/ai-services/test_part_c.py`](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem\Week_wise_sol\All Week Tasks Sol\Week_07\Week_07_Final_Project\ai-services\test_part_c.py)
+## ✅ Verification Checklist
+- [x] Pydantic structured output router with `Literal["catalog", "action", "chitchat"]` achieving 100% (15/15) benchmark accuracy.
+- [x] Week 6 LCEL RAG knowledge retrieval compiled into standalone subgraph branch.
+- [x] Automatic re-planning triggered upon 409 Conflict without infinite retry loops.
+- [x] Typed error format (`ERROR_RETRYABLE` vs `ERROR_FINAL`) isolating network jitter from deterministic application failures.
