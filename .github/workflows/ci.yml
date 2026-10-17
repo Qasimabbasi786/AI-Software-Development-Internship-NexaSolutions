@@ -2,8 +2,13 @@ name: ci
 
 on:
   pull_request:
+    branches: [main]
   push:
     branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   dotnet:
@@ -17,13 +22,17 @@ jobs:
         with:
           dotnet-version: "8.0.x"
 
+      - name: Restore Dependencies
+        working-directory: Week_07/Week_07_Final_Project/backend
+        run: dotnet restore
+
       - name: Build .NET Backend
         working-directory: Week_07/Week_07_Final_Project/backend
-        run: dotnet build --no-restore -c Release || dotnet build -c Release
+        run: dotnet build -c Release --no-restore
 
       - name: Run .NET Integration Tests
         working-directory: Week_07/Week_07_Final_Project/backend/tests
-        run: dotnet test -c Release --verbosity normal
+        run: dotnet test -c Release --no-build --verbosity normal
 
   angular:
     name: Build Angular Frontend
@@ -62,7 +71,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          pip install pytest pytest-asyncio respx httpx langgraph langgraph-checkpoint-sqlite langchain-core
+          pip install pytest pytest-asyncio respx httpx langgraph langgraph-checkpoint-sqlite langchain-core pydantic
 
       - name: Run Pytest Deterministic Suite (Mocked, Zero Live Secrets)
         working-directory: Week_07/Week_07_Final_Project/ai-services
