@@ -59,15 +59,13 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
             if (!db.Books.Any())
             {
-                var author = new Models.Author { AuthorId = 1, Name = "Frank Herbert" };
+                var author = new Models.Author { AuthorId = 1, FullName = "Frank Herbert" };
                 db.Authors.Add(author);
                 db.Books.Add(new Models.Book
                 {
                     BookId = 1,
                     Title = "Dune",
                     AuthorId = 1,
-                    Genre = "Science Fiction",
-                    Description = "Desert planet",
                     IsAvailable = true
                 });
                 db.Books.Add(new Models.Book
@@ -75,9 +73,21 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
                     BookId = 2,
                     Title = "Unavailable Book",
                     AuthorId = 1,
-                    Genre = "Science Fiction",
-                    Description = "Reserved",
                     IsAvailable = false
+                });
+                db.Books.Add(new Models.Book
+                {
+                    BookId = 3,
+                    Title = "Neuromancer",
+                    AuthorId = 1,
+                    IsAvailable = true
+                });
+                db.Books.Add(new Models.Book
+                {
+                    BookId = 4,
+                    Title = "Clean Code",
+                    AuthorId = 1,
+                    IsAvailable = true
                 });
                 db.SaveChanges();
             }
@@ -93,6 +103,14 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
 public class FakeAiServiceClient : IAiServiceClient
 {
-    public Task<string> AskAssistantAsync(string question) => Task.FromResult("Fake answer");
-    public Task<string> SummarizeBookAsync(string title, string text) => Task.FromResult("Fake summary");
+    public Task<AiAnswerResponse> AskAsync(string question, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(new AiAnswerResponse
+        {
+            Answer = "Fake answer for test",
+            Confidence = "high",
+            Sources = new List<string> { "Dune" }
+        });
+    }
 }
+

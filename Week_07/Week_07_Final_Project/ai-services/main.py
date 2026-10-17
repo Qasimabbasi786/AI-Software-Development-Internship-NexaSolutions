@@ -412,6 +412,217 @@ async def ask_stream(req: AskRequest):
         }
     )
 
+# ----------------------------------------------------------------------
+# 6. Part H: LangGraph Agent Runs with SSE & Human-in-the-Loop
+# ----------------------------------------------------------------------
+SERVICE_KEY = os.getenv("SERVICE_KEY", "nexa-secure-service-key-2026")
+
+class AgentRunPayload(BaseModel):
+    thread_id: str
+    user_id: str
+    question: str
+
+class AgentResumePayload(BaseModel):
+    thread_id: str
+    user_id: str
+    approved: bool
+
+# In-memory cancel registry for active run aborts
+ACTIVE_RUN_CANCELLATIONS: Dict[str, asyncio.Event] = {}
+
+def verify_service_key(request: Request):
+    key = request.headers.get("X-Service-Key")
+    if not key or key != SERVICE_KEY:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Forbidden: Invalid or missing X-Service-Key"
+        )
+
+# Import compiled agent graph and sqlite checkpointer
+from agent_graph import build_library_agent_graph
+from langgraph.checkpoint.sqlite import SqliteSaver
+from langgraph.types import Command
+import sqlite3
+
+_sqlite_conn = sqlite3.connect(str(_current_dir / "agent_checkpoints.sqlite"), check_same_thread=False)
+_checkpointer = SqliteSaver(_sqlite_conn)
+agent_graph = build_library_agent_graph(checkpointer=_checkpointer)
+
+@app.post("/agent/run")
+async def run_agent_stream(
+    payload: AgentRunPayload,
+    request: Request
+):
+    """
+    Executes LangGraph agent run streaming typed SSE events:
+    - step: { kind: 'tool_call' | 'tool_result', name, summary }
+    - token: { text }
+    - approval_required: { threadId, calls }
+    - final: { answer, sources }
+    - error: { code, message, retryable }
+    """
+    verify_service_key(request)
+    forwarded_jwt = request.headers.get("X-Forwarded-User-Token", "")
+
+    cancel_event = asyncio.Event()
+    ACTIVE_RUN_CANCELLATIONS[payload.thread_id] = cancel_event
+
+    config = {
+        "configurable": {
+            "thread_id": payload.thread_id,
+            "user_id": payload.user_id,
+            "jwt_token": forwarded_jwt
+        }
+    }
+
+    async def event_generator():
+        try:
+            # First event: acknowledge threadId
+            yield f"data: {json.dumps({'event': 'started', 'threadId': payload.thread_id})}\n\n"
+
+            # Execute graph turn
+            inputs = {
+                "messages": [HumanMessage(content=payload.question)],
+                "steps": 0,
+                "retries": 0
+            }
+
+            # Run stream
+            async for chunk in agent_graph.astream(inputs, config, stream_mode=["updates", "messages"]):
+                if cancel_event.is_set():
+                    yield f"data: {json.dumps({'event': 'cancelled', 'threadId': payload.thread_id})}\n\n"
+                    return
+
+                mode = chunk[0] if isinstance(chunk, tuple) else "updates"
+                data = chunk[1] if isinstance(chunk, tuple) else chunk
+
+                if mode == "updates":
+                    # Check for approval interrupt
+                    state = agent_graph.get_state(config)
+                    if state.tasks and any(t.interrupts for t in state.tasks):
+                        for t in state.tasks:
+                            for intr in t.interrupts:
+                                intr_val = intr.value if hasattr(intr, "value") else intr
+                                yield f"data: {json.dumps({'event': 'approval_required', 'threadId': payload.thread_id, 'calls': intr_val.get('calls', []), 'message': intr_val.get('message', 'Approval needed')})}\n\n"
+                                return
+
+                    for node_name, node_output in data.items():
+                        if node_name == "tools":
+                            for msg in node_output.get("messages", []):
+                                yield f"data: {json.dumps({'event': 'step', 'kind': 'tool_result', 'name': getattr(msg, 'name', 'tool'), 'summary': str(msg.content)[:120]})}\n\n"
+                        elif node_name == "agent":
+                            for msg in node_output.get("messages", []):
+                                tool_calls = getattr(msg, "tool_calls", [])
+                                if tool_calls:
+                                    for tc in tool_calls:
+                                        yield f"data: {json.dumps({'event': 'step', 'kind': 'tool_call', 'name': tc['name'], 'summary': f'Calling {tc[\"name\"]} with {tc[\"args\"]}'})}\n\n"
+
+            # Final state check
+            current_state = agent_graph.get_state(config)
+            if current_state.tasks and any(t.interrupts for t in current_state.tasks):
+                for t in current_state.tasks:
+                    for intr in t.interrupts:
+                        intr_val = intr.value if hasattr(intr, "value") else intr
+                        yield f"data: {json.dumps({'event': 'approval_required', 'threadId': payload.thread_id, 'calls': intr_val.get('calls', []), 'message': intr_val.get('message', 'Approval needed')})}\n\n"
+                        return
+
+            # If finished, yield final event
+            msgs = current_state.values.get("messages", [])
+            final_content = msgs[-1].content if msgs else "Task completed."
+            yield f"data: {json.dumps({'event': 'final', 'answer': str(final_content), 'sources': ['Library Catalog']})}\n\n"
+
+        except Exception as e:
+            yield f"data: {json.dumps({'event': 'error', 'code': 500, 'message': str(e), 'retryable': False})}\n\n"
+        finally:
+            ACTIVE_RUN_CANCELLATIONS.pop(payload.thread_id, None)
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"
+        }
+    )
+
+@app.post("/agent/runs/{thread_id}/resume")
+async def resume_agent_stream(
+    thread_id: str,
+    payload: AgentResumePayload,
+    request: Request
+):
+    verify_service_key(request)
+    forwarded_jwt = request.headers.get("X-Forwarded-User-Token", "")
+
+    config = {
+        "configurable": {
+            "thread_id": thread_id,
+            "user_id": payload.user_id,
+            "jwt_token": forwarded_jwt
+        }
+    }
+
+    async def resume_generator():
+        try:
+            yield f"data: {json.dumps({'event': 'step', 'kind': 'tool_call', 'name': 'resume', 'summary': f'Resuming with approved={payload.approved}'})}\n\n"
+
+            resume_cmd = Command(resume={"approved": payload.approved})
+
+            async for chunk in agent_graph.astream(resume_cmd, config, stream_mode=["updates"]):
+                data = chunk[1] if isinstance(chunk, tuple) else chunk
+                for node_name, node_output in data.items():
+                    if node_name == "tools":
+                        for msg in node_output.get("messages", []):
+                            yield f"data: {json.dumps({'event': 'step', 'kind': 'tool_result', 'name': getattr(msg, 'name', 'tool'), 'summary': str(msg.content)[:120]})}\n\n"
+
+            # Check final state
+            current_state = agent_graph.get_state(config)
+            msgs = current_state.values.get("messages", [])
+            final_content = msgs[-1].content if msgs else "Task resumed and completed."
+            yield f"data: {json.dumps({'event': 'final', 'answer': str(final_content), 'sources': ['Library Catalog']})}\n\n"
+
+        except Exception as e:
+            yield f"data: {json.dumps({'event': 'error', 'code': 500, 'message': str(e), 'retryable': False})}\n\n"
+
+    return StreamingResponse(
+        resume_generator(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"
+        }
+    )
+
+@app.get("/agent/runs/{thread_id}/state")
+async def get_agent_state_snapshot(thread_id: str, request: Request):
+    verify_service_key(request)
+    config = {"configurable": {"thread_id": thread_id}}
+    state = agent_graph.get_state(config)
+    pending_calls = []
+    if state.tasks:
+        for t in state.tasks:
+            for intr in t.interrupts:
+                intr_val = intr.value if hasattr(intr, "value") else intr
+                pending_calls.extend(intr_val.get("calls", []))
+
+    return {
+        "thread_id": thread_id,
+        "is_paused": bool(pending_calls),
+        "pending_calls": pending_calls,
+        "step_count": state.values.get("steps", 0) if state.values else 0
+    }
+
+@app.post("/agent/runs/{thread_id}/cancel")
+async def cancel_agent_execution(thread_id: str, request: Request):
+    verify_service_key(request)
+    if thread_id in ACTIVE_RUN_CANCELLATIONS:
+        ACTIVE_RUN_CANCELLATIONS[thread_id].set()
+        return {"status": "cancelled", "thread_id": thread_id}
+    return {"status": "not_running", "thread_id": thread_id}
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+

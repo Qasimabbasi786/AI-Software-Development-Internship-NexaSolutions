@@ -269,3 +269,145 @@
   font-size: 0.85rem;
   cursor: pointer;
 }
+
+/* -------------------------------------------------------------
+ * Agent Timeline Styles
+ * -----------------------------------------------------------*/
+.agent-timeline {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+}
+
+.timeline-title {
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+}
+
+.timeline-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 0;
+  color: #334155;
+}
+
+.step-badge {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #e2e8f0;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.timeline-item.tool_call .step-badge {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.timeline-item.tool_result .step-badge {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.timeline-item.thought .step-badge {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.step-name {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.step-summary {
+  color: #64748b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 220px;
+}
+
+/* -------------------------------------------------------------
+ * Interactive Human Approval Card Styles
+ * -----------------------------------------------------------*/
+.approval-card {
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  border-radius: 10px;
+  padding: 12px;
+  margin: 10px 0;
+  box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.1);
+}
+
+.approval-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #92400e;
+  font-size: 0.88rem;
+  margin-bottom: 6px;
+}
+
+.approval-message {
+  margin: 0 0 10px 0;
+  font-size: 0.84rem;
+  color: #78350f;
+  line-height: 1.4;
+}
+
+.approval-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-approve {
+  background: #16a34a;
+  color: #ffffff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-approve:hover:not(:disabled) {
+  background: #15803d;
+}
+
+.btn-approve:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-reject {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-reject:hover:not(:disabled) {
+  background: #e2e8f0;
+}
+
+.btn-reject:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+

@@ -15,7 +15,7 @@ public class ReservationIntegrationTests : IClassFixture<CustomWebApplicationFac
 {
     private readonly HttpClient _client;
     private readonly CustomWebApplicationFactory _factory;
-    private const string TestJwtSecret = "YourSuperSecretKeyForJwtSigningMustBeAtLeast32BytesLong!";
+    private const string TestJwtSecret = "NexaSolutions_OriginSoft_SecureKey_2026_JWT_SecretKey_9876543210!";
 
     public ReservationIntegrationTests(CustomWebApplicationFactory factory)
     {
@@ -75,14 +75,14 @@ public class ReservationIntegrationTests : IClassFixture<CustomWebApplicationFac
         var token = GenerateTestJwt("user_102");
         var idempotencyKey = $"idempotent-key-{Guid.NewGuid()}";
 
-        // First attempt on Book 1 (or new book)
-        using var req1 = new HttpRequestMessage(HttpMethod.Post, "/api/books/1/reserve");
+        // First attempt on Book 3 (fresh available book)
+        using var req1 = new HttpRequestMessage(HttpMethod.Post, "/api/books/3/reserve");
         req1.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
         req1.Headers.Add("Idempotency-Key", idempotencyKey);
         var res1 = await _client.SendAsync(req1);
 
         // Second attempt with exact same key
-        using var req2 = new HttpRequestMessage(HttpMethod.Post, "/api/books/1/reserve");
+        using var req2 = new HttpRequestMessage(HttpMethod.Post, "/api/books/3/reserve");
         req2.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
         req2.Headers.Add("Idempotency-Key", idempotencyKey);
         var res2 = await _client.SendAsync(req2);
@@ -144,5 +144,35 @@ public class ReservationIntegrationTests : IClassFixture<CustomWebApplicationFac
         var content = await getRes.Content.ReadAsStringAsync();
         Assert.Contains("favorite_genre", content);
         Assert.Contains("Science Fiction", content);
+    }
+
+    [Fact]
+    public async Task AgentRun_NonOwnerAccess_Returns404NotFoundNot403()
+    {
+        var ownerToken = GenerateTestJwt("user_legit_owner");
+        var attackerToken = GenerateTestJwt("user_attacker");
+        var threadId = $"thread_test_{Guid.NewGuid():N}";
+
+        // Step 1: Owner creates thread via starting run
+        using var runReq = new HttpRequestMessage(HttpMethod.Post, "/api/assistant/agent/runs");
+        runReq.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ownerToken);
+        runReq.Content = JsonContent.Create(new { Question = "Hello", ThreadId = threadId });
+        var runRes = await _client.SendAsync(runReq);
+        // Thread is stored in DB even if upstream mock fails or streams
+
+        // Step 2: Attacker attempts to read owner's thread state -> Expect 404
+        using var probeReq = new HttpRequestMessage(HttpMethod.Get, $"/api/assistant/agent/runs/{threadId}");
+        probeReq.Headers.Authorization = new AuthenticationHeaderValue("Bearer", attackerToken);
+        var probeRes = await _client.SendAsync(probeReq);
+
+        Assert.Equal(HttpStatusCode.NotFound, probeRes.StatusCode);
+
+        // Step 3: Attacker attempts to resume owner's thread -> Expect 404
+        using var hijackReq = new HttpRequestMessage(HttpMethod.Post, $"/api/assistant/agent/runs/{threadId}/resume");
+        hijackReq.Headers.Authorization = new AuthenticationHeaderValue("Bearer", attackerToken);
+        hijackReq.Content = JsonContent.Create(new { Approved = true });
+        var hijackRes = await _client.SendAsync(hijackReq);
+
+        Assert.Equal(HttpStatusCode.NotFound, hijackRes.StatusCode);
     }
 }
