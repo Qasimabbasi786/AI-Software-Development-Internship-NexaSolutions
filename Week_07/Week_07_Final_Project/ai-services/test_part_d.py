@@ -37,10 +37,14 @@ def run_part_d_suite():
 
     test_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLTQyIn0.signature"
     thread_id = f"test-thread-{uuid.uuid4().hex[:8]}"
+
+    # Set ephemeral security contextvar (ensures token NEVER enters LangGraph checkpoint or metadata)
+    from agent_tools import CURRENT_USER_TOKEN
+    CURRENT_USER_TOKEN.set(test_token)
+
     cfg = {
         "configurable": {
             "thread_id": thread_id,
-            "user_token": test_token,  # Must NEVER appear in SQLite checkpoint DB!
             "idempotency_key": str(uuid.uuid4())
         }
     }

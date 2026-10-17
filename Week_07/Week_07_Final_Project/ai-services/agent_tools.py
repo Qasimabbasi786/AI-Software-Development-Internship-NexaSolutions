@@ -11,6 +11,7 @@ Implements:
 import os
 import uuid
 import httpx
+import contextvars
 from typing import Optional, Dict, Any
 from pydantic import BaseModel, Field
 from langchain_core.tools import tool
@@ -18,11 +19,17 @@ from langchain_core.runnables import RunnableConfig
 
 DOTNET_URL = os.getenv("DOTNET_URL", "http://localhost:5000")
 
+# Security ContextVars: keeps secrets strictly in ephemeral runtime execution memory
+# and completely absent from LangGraph's serialized checkpoint state and metadata.
+CURRENT_USER_TOKEN: contextvars.ContextVar[Optional[str]] = contextvars.ContextVar("current_user_token", default=None)
+CURRENT_IDEMPOTENCY_KEY: contextvars.ContextVar[Optional[str]] = contextvars.ContextVar("current_idempotency_key", default=None)
+
 # ---------------------------------------------------------------------------
 # Argument Schemas
 # ---------------------------------------------------------------------------
 class ReserveArgs(BaseModel):
     book_id: int = Field(gt=0, description="Numeric ID of the book to reserve. Must be a positive integer.")
+
 
 class AvailabilityArgs(BaseModel):
     book_id: int = Field(gt=0, description="Numeric ID of the book to check availability for.")
@@ -88,10 +95,10 @@ def reserve_book(book_id: int, config: RunnableConfig) -> str:
     This is a WRITE TOOL that creates persistent data and modifies book availability.
     High risk: requires human approval before execution."""
     # Never read token from graph state (which gets persisted into SQLite checkpoints)
-    # Token travels strictly through RunnableConfig
-    configurable = config.get("configurable", {})
-    token = configurable.get("user_token")
-    key = configurable.get("idempotency_key") or str(uuid.uuid4())
+    # Token travels strictly through ContextVar or ephemeral RunnableConfig
+    configurable = config.get("configurable", {}) if config else {}
+    token = CURRENT_USER_TOKEN.get() or configurable.get("user_token") or configurable.get("jwt_token")
+    key = CURRENT_IDEMPOTENCY_KEY.get() or configurable.get("idempotency_key") or str(uuid.uuid4())
 
     headers = {
         "Idempotency-Key": f"{key}:{book_id}"
@@ -126,11 +133,12 @@ def reserve_book(book_id: int, config: RunnableConfig) -> str:
 def list_my_reservations(config: RunnableConfig) -> str:
     """Retrieve all active reservations belonging to the CURRENT USER.
     This is a READ-ONLY tool scoped strictly to the caller's JWT identity."""
-    configurable = config.get("configurable", {})
-    token = configurable.get("user_token")
+    configurable = config.get("configurable", {}) if config else {}
+    token = CURRENT_USER_TOKEN.get() or configurable.get("user_token") or configurable.get("jwt_token")
 
     if not token:
         return "ERROR_FINAL: User authentication token is required to view personal reservations."
+
 
     headers = {"Authorization": f"Bearer {token}"}
     try:
