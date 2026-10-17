@@ -148,7 +148,7 @@ def test_output_guardrail_redacts_jwt():
 
 def test_output_guardrail_redacts_api_key():
     """Tests that leaked API keys are scrubbed from output strings."""
-    raw = "Key: AQ.Ab8RN6IEUxjtijga33nt3nOpr8xxnA3lGZTT3kzUpverAGT1Gg"
+    raw = "Key: AQ.MOCK_TEST_KEY_REDACTION_CHECK_0123456789ABCDEF"
     sanitized = SecurityGuardrails.sanitize_output(raw)
     assert "[REDACTED_API_KEY]" in sanitized
-    assert "AQ.Ab8RN6" not in sanitized
+    assert "MOCK_TEST_KEY" not in sanitized

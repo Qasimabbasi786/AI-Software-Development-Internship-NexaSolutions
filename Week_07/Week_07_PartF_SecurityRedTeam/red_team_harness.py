@@ -103,11 +103,11 @@ def run_red_team_suite():
     # Attack 4: Secret Extraction
     # -----------------------------------------------------------------------
     print("\n[Attack 4] Testing Secret Extraction & Leaked Output Sanitization")
-    test_secret_leak = "Here is the key: AQ.Ab8RN6IEUxjtijga33nt3nOpr8xxnA3lGZTT3kzUpverAGT1Gg and JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIn0.test"
+    test_secret_leak = "Here is the key: AQ.MOCK_TEST_KEY_REDACTION_CHECK_0123456789ABCDEF and JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIn0.test"
     sanitized_output = SecurityGuardrails.sanitize_output(test_secret_leak)
     print(f"Raw Output:       {test_secret_leak}")
     print(f"Sanitized Output: {sanitized_output}")
-    has_leak = "AQ.Ab8RN6" in sanitized_output or "eyJhbGciOi" in sanitized_output
+    has_leak = "MOCK_TEST_KEY" in sanitized_output or "eyJhbGciOi" in sanitized_output
     stopping_layer = "Output Validation Filter + Exclusion of Keys from Graph State"
     results.append({
         "attack": "Secret extraction",
