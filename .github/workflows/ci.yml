@@ -7,45 +7,63 @@ on:
 
 jobs:
   dotnet:
+    name: Build & Test .NET Backend
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.x"
-      - name: Build .NET Projects
+
+      - name: Build .NET Backend
+        working-directory: Week_07/Week_07_Final_Project/backend
         run: dotnet build --no-restore -c Release || dotnet build -c Release
-      - name: Run .NET Tests
+
+      - name: Run .NET Integration Tests
+        working-directory: Week_07/Week_07_Final_Project/backend/tests
         run: dotnet test -c Release --verbosity normal
 
   angular:
+    name: Build Angular Frontend
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: |
-            Week_07/Week_07_Final_Project/frontend/package-lock.json
+          cache-dependency-path: Week_07/Week_07_Final_Project/frontend/package-lock.json
+
       - name: Install Frontend Dependencies
         working-directory: Week_07/Week_07_Final_Project/frontend
         run: npm ci || npm install
-      - name: Build Angular App
+
+      - name: Build Angular Client
         working-directory: Week_07/Week_07_Final_Project/frontend
         run: npm run build --if-present
 
   python:
+    name: Test Python AI Services (Deterministic Suite)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
       - name: Install Python Dependencies & Test Tools
+        working-directory: Week_07/Week_07_Final_Project/ai-services
         run: |
           python -m pip install --upgrade pip
-          if [ -f Week_07/requirements.txt ]; then pip install -r Week_07/requirements.txt; fi
-          pip install pytest pytest-asyncio respx httpx
-      - name: Run Pytest Deterministic Suite
-        run: pytest -q Week_07/
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install pytest pytest-asyncio respx httpx langgraph langgraph-checkpoint-sqlite langchain-core
+
+      - name: Run Pytest Deterministic Suite (Mocked, Zero Live Secrets)
+        working-directory: Week_07/Week_07_Final_Project/ai-services
+        run: pytest -q tests/test_deterministic_suite.py
