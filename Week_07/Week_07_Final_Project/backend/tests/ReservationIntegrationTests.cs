@@ -124,6 +124,29 @@ public class ReservationIntegrationTests : IClassFixture<CustomWebApplicationFac
     }
 
     [Fact]
+    public async Task Reserve_MissingBookId_Returns404NotFound()
+    {
+        var token = GenerateTestJwt("user_missing_book");
+        // Book 99999 does not exist
+        using var req = new HttpRequestMessage(HttpMethod.Post, "/api/books/99999/reserve");
+        req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        req.Headers.Add("Idempotency-Key", $"key-missing-{Guid.NewGuid()}");
+
+        var response = await _client.SendAsync(req);
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        var content = await response.Content.ReadAsStringAsync();
+        Assert.Contains("not found", content.ToLower());
+    }
+
+    [Fact]
+    public async Task GetMyReservations_WithoutToken_Returns401Unauthorized()
+    {
+        var response = await _client.GetAsync("/api/me/reservations");
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
     public async Task Preferences_SaveAndRetrieve_Succeeds()
     {
         var user = "pref_user_1";

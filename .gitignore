@@ -59,6 +59,8 @@ htmlcov/
 *.sqlite
 *.sqlite3
 *.db
+agent_checkpoints.sqlite
+eval_checkpoints.sqlite
 
 # ------------------------------------------------------------------------------
 # 5. IDE, Editor & OS Specific Files
