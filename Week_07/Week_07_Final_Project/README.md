@@ -1,119 +1,101 @@
-# 🏛️ Library AI Assistant (LangChain LCEL, Resilient .NET Proxy & Angular Streaming)
+# 🏛️ Library Agent: Find, Approve, Reserve (Week 7 Final Project)
 
 **Author:** Muhammad Qasim  
 **Program:** AI Software Development Internship (.NET + Angular + AI)  
-**Milestone:** Week 6 Final Project — Production Multi-Tier Streaming Architecture  
+**Milestone:** Week 7 Final Project — Secure LangGraph Agents, Tool Execution, HITL, Persistence & CI  
 
-[![Python: 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Python: 3.12+](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![LangGraph](https://img.shields.io/badge/Orchestrator-LangGraph-2E7D32?logo=diagram-project&logoColor=white)](https://langchain-ai.github.io/langgraph/)
 [![.NET: 8.0](https://img.shields.io/badge/.NET-8.0_Web_API-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
-[![Angular: 18](https://img.shields.io/badge/Angular-18_Standalone-DD0031?logo=angular&logoColor=white)](https://angular.dev/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![ChromaDB](https://img.shields.io/badge/Vector_DB-ChromaDB-FF6F00?logo=chroma&logoColor=white)](https://www.trychroma.com/)
+[![Angular: 18/20](https://img.shields.io/badge/Angular-18_Standalone-DD0031?logo=angular&logoColor=white)](https://angular.dev/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.110%2B-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![SQLite Checkpointer](https://img.shields.io/badge/Checkpointer-SqliteSaver-003B57?logo=sqlite&logoColor=white)](https://www.sqlite.org/)
 [![Google Gemini](https://img.shields.io/badge/AI_Engine-Google_Gemini-4285F4?logo=google&logoColor=white)](https://ai.google.dev/)
 [![Status: Completed](https://img.shields.io/badge/Status-Completed_%E2%9C%85-success)](https://github.com/)
 
 ---
 
 ## 📌 Executive Summary
-The **Week 6 Final Project** connects the entire internship full-stack architecture into a unified, production-grade **Library AI Assistant**. Building upon the RAG foundation of Week 5, this capstone delivers real-time token-by-token streaming from Google Gemini, routed through a secured ASP.NET Core gateway proxy with Polly resilience, and rendered into a modern Angular chat drawer.
+The **Week 7 Final Project** elevates the Library AI system into an autonomous, stateful **LangGraph Agent** capable of searching catalog records, checking physical shelf availability, pausing for explicit Human-in-the-Loop (HITL) approval before executing book reservations, re-planning upon 409 conflict errors, and surviving browser refreshes via durable SQLite checkpoints.
 
 ---
 
-## 🏗️ Complete Multi-Tier Data Flow Architecture
+## 🏗️ Multi-Tier Architecture & LangGraph Graph Topology
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│               Layer 3: Angular Frontend Client (:4200)         │
-│  - chat-assistant.component: Floating reactive drawer          │
-│  - chat.service.ts: Native fetch() with ReadableStream reader  │
-│  - Decodes SSE stream chunks ("data: ...\n\n")                 │
-│  - Live progressive token UI rendering with typing cursor      │
-└───────────────────────────────┬────────────────────────────────┘
-                                │ HTTP POST /api/assistant/ask/stream (JWT Bearer)
-                                ▼
-┌────────────────────────────────────────────────────────────────┐
-│             Layer 2: ASP.NET Core 8 Web API Gateway (:5000)    │
-│  - AssistantController.cs: Validates JWT perimeter claims      │
-│  - Sets Response.ContentType = "text/event-stream"             │
-│  - SendAsync(..., HttpCompletionOption.ResponseHeadersRead)    │
-│  - CRITICAL: await Response.Body.FlushAsync() avoids buffering │
-│  - Polly Policies: 3x Exponential Retry & Circuit Breaker (503)│
-└───────────────────────────────┬────────────────────────────────┘
-                                │ HTTP POST /ask/stream (Internal Network)
-                                ▼
-┌────────────────────────────────────────────────────────────────┐
-│            Layer 1: FastAPI AI Microservice (:8000)            │
-│  - main.py: LangChain LCEL Declarative Pipeline (|)            │
-│  - RunnableLambda: Input guard (< 3 chars -> HTTP 400)         │
-│  - MultiQueryRetriever: Generates query variations on ChromaDB │
-│  - Session-Scoped Memory: RunnableWithMessageHistory           │
-│  - @tool check_book_availability: Dynamic availability lookup  │
-│  - StreamingResponse: Emits data: {chunk}\n\n + data: [DONE]   │
-└───────────────────────────────┬────────────────────────────────┘
-                                │ Asynchronous Generator (astream)
-                                ▼
-┌────────────────────────────────────────────────────────────────┐
-│                   Google Gemini AI Model Engine                │
-│  - Models: gemini-3.5-flash-lite / models/gemini-embedding-001 │
-│  - Temperature: 0.0 for deterministic factual grounding        │
-└────────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    START([START]) --> Router[Router Node: Intent Classifier]
+
+    Router -->|catalog| RAG[RAG Subgraph: Week 6 Knowledge Retrieval]
+    Router -->|chitchat| Chitchat[Chitchat Node: Conversational Greetings]
+    Router -->|action| Agent[Agent Action & Planning Node]
+
+    RAG --> END([END])
+    Chitchat --> END
+
+    Agent --> StepLimitCheck{Steps >= 6?}
+    StepLimitCheck -->|Yes| GiveUp[Give Up Node: Step Budget Exhausted]
+    GiveUp --> END
+
+    StepLimitCheck -->|No| ToolCallCheck{Tool Calls?}
+    ToolCallCheck -->|None / Final Answer| END
+    ToolCallCheck -->|Read-Only Tools| Tools[ToolNode: search_catalog, check_availability, list_reservations]
+    ToolCallCheck -->|Risky Tool: reserve_book| Approval[Approval Node: interrupt]
+
+    Approval -->|Human Approved| Tools
+    Approval -->|Human Rejected| Agent
+
+    Tools --> ErrorCheck{Tool Result Error Type?}
+    ErrorCheck -->|ERROR_RETRYABLE & Retries < 2| RetryBackoff[Exponential Backoff] --> Agent
+    ErrorCheck -->|ERROR_FINAL 409 Conflict| Replan[Re-plan Alternative Book] --> Agent
+    ErrorCheck -->|Success OK| Agent
 ```
 
 ---
 
-## 📂 Project Subdirectories
+## 🛡️ Core Agent Tools & Least Privilege
 
-| Directory | Role | Technologies |
-| :--- | :--- | :--- |
-| **`ai-services/`** | Production AI microservice with LCEL RAG, memory, and SSE streaming. | FastAPI, LangChain, Google Gemini, ChromaDB |
-| **`backend/`** | Core library API, JWT authentication, and resilient streaming proxy. | ASP.NET Core 8, EF Core, Polly, Npgsql |
-| **`frontend/`** | Client web application with real-time streaming chat drawer. | Angular 18, TypeScript, Native Fetch / SSE |
+All tools are implemented in [`ai-services/agent_tools.py`](ai-services/agent_tools.py) with Pydantic boundary validation:
 
----
-
-## 🛠️ Key Architectural Components
-
-### 1. Angular Chat UI (`frontend/`)
-- **Native `fetch` with `ReadableStream`:** Angular's standard `HttpClient` buffers whole HTTP payloads; native `fetch()` combined with `response.body.getReader()` progressively decodes SSE text chunks as they arrive.
-- **Dynamic Floating Drawer:** Responsive chat window with animated cursor, message history, session reset, and stream cancellation via `AbortController`.
-
-### 2. ASP.NET Core Streaming Proxy (`backend/`)
-- **`HttpCompletionOption.ResponseHeadersRead`:** Unblocks .NET from waiting for the downstream stream to complete before writing headers to the browser.
-- **`await Response.Body.FlushAsync()`:** Essential to defeat internal Kestrel and TCP socket buffering, ensuring tokens are pushed over the wire immediately.
-- **Polly Resilience Policies:**
-  - **Retry Policy:** 3 retries with exponential backoff (`2^attempt` seconds).
-  - **Timeout Policy:** 10-second per-request ceiling.
-  - **Circuit Breaker:** Opens after 3 consecutive failures for 30 seconds, returning a clean `503 Service Unavailable` JSON response.
-
-### 3. FastAPI & LangChain AI Engine (`ai-services/`)
-- **LCEL Composition:** Composed using `RunnableSequence` and `|` pipe syntax.
-- **Boundary Splitting:** `RecursiveCharacterTextSplitter` chunking library knowledge on semantic boundaries.
-- **Multi-Query Retrieval:** Reformulates user questions to overcome vocabulary mismatch against ChromaDB embeddings.
-- **Dynamic Tool Calling:** Bound `@tool check_book_availability` querying `GET /api/books/{id}/availability`.
-- **Session-Scoped Memory:** `RunnableWithMessageHistory` maintaining conversation context per `session_id`.
+1. **`search_catalog(query: str)`**:
+   - Read-only tool searching catalog records. Safe for unbounded autonomous execution.
+2. **`check_availability(book_id: int)`**:
+   - Read-only tool validating that `book_id > 0` via `AvailabilityArgs(gt=0)`.
+3. **`reserve_book(book_id: int)`**:
+   - High-risk write tool creating reservations. Requires human approval intercept.
+   - Extracts user JWT and idempotency keys strictly from `RunnableConfig` (never persisted in state).
+4. **`list_my_reservations()`**:
+   - Read-only account tool scoped to caller identity.
 
 ---
 
-## ⚠️ Known Architectural Limitations
+## 🔁 Typed Retries & Re-planning Path
 
-- **In-Memory Session Persistence:** Conversation history is stored in-process via `InMemoryChatMessageHistory` (`session_store: Dict[str, BaseChatMessageHistory]`). If the FastAPI service restarts or scales across multiple load-balanced instances, active conversation context will not persist across nodes. In production (Week 7+), this will be backed by Redis or PostgreSQL persistence stores.
+- **Transient Failures (`ERROR_RETRYABLE`)**:
+  - Automatically retried up to 2 times with exponential backoff ($0.5 \times (\text{retries} + 1)$ seconds).
+- **Reservation Conflict (`ERROR_FINAL: 409 Conflict`)**:
+  - The agent detects the conflict and does NOT loop. It immediately invokes `search_catalog` to recommend alternative available books in the same genre.
+- **Global Step Limit**:
+  - Hard limit of `MAX_STEPS = 6` routes to `give_up_node` preventing infinite tool execution loops.
 
 ---
 
-## 🧪 Verification & Execution
+## 🚀 Running the Project
 
-### 1. Run Comprehensive Automated Test Suite
-```powershell
-& "D:\Software\PythonEnvironments\AI_env\Scripts\python.exe" test_week6_suite.py
+### 1. Backend (.NET 8 Web API)
+```bash
+cd backend
+dotnet run
 ```
-**Tests Verified:**
-- Input Guard (< 3 characters rejected with HTTP 400).
-- Multi-turn session memory & pronoun resolution (*"Tell me about Dune"* $\rightarrow$ *"What genre is it?"*).
-- Dynamic tool calling (`check_book_availability`).
-- Out-of-catalog refusal grounding (*"What is the recipe for chocolate lava cake?"*).
-- End-to-end SSE live chunk streaming.
 
-### 2. Interactive Terminal Streaming Chat
-```powershell
-& "D:\Software\PythonEnvironments\AI_env\Scripts\python.exe" interactive_client.py
+### 2. AI Services (FastAPI + LangGraph)
+```bash
+cd ai-services
+python main.py
+```
+
+### 3. Frontend (Angular 18/20)
+```bash
+cd frontend
+npm start
 ```
