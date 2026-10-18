@@ -127,8 +127,12 @@ public class AssistantController : ControllerBase
         Response.Headers["Connection"] = "keep-alive";
         Response.Headers["X-Accel-Buffering"] = "no";
 
-        // Forward JWT and X-Service-Key to FastAPI upstream
+        // Forward JWT, X-Service-Key, and X-Correlation-Id to FastAPI upstream
         var userJwt = Request.Headers.Authorization.ToString().Replace("Bearer ", "").Trim();
+        var correlationId = HttpContext.Response.Headers["X-Correlation-Id"].FirstOrDefault() 
+                            ?? HttpContext.Request.Headers["X-Correlation-Id"].FirstOrDefault() 
+                            ?? Guid.NewGuid().ToString("N");
+
         var upstreamRequest = new HttpRequestMessage(HttpMethod.Post, "/agent/run")
         {
             Content = JsonContent.Create(new
@@ -139,10 +143,17 @@ public class AssistantController : ControllerBase
             })
         };
         upstreamRequest.Headers.Add("X-Service-Key", _serviceKey);
+        upstreamRequest.Headers.Add("X-Correlation-Id", correlationId);
         if (!string.IsNullOrEmpty(userJwt))
         {
             upstreamRequest.Headers.Add("X-Forwarded-User-Token", userJwt);
         }
+
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        int totalStepCount = 0;
+        int finalTokens = 0;
+        string runOutcome = "InProgress";
+
 
         try
         {
@@ -175,13 +186,19 @@ public class AssistantController : ControllerBase
                 var line = await reader.ReadLineAsync(clientDisconnectToken);
                 if (string.IsNullOrEmpty(line)) continue;
 
-                if (line.Contains("\"approval_required\""))
+                if (line.Contains("\"step\""))
                 {
+                    totalStepCount++;
+                }
+                else if (line.Contains("\"approval_required\""))
+                {
+                    runOutcome = "ApprovalRequired";
                     existingThread.Status = "Paused";
                     await _dbContext.SaveChangesAsync(CancellationToken.None);
                 }
                 else if (line.Contains("\"final\""))
                 {
+                    runOutcome = "Completed";
                     existingThread.Status = "Completed";
                     
                     // Week 8 Part B: Record token usage in database
@@ -198,6 +215,7 @@ public class AssistantController : ControllerBase
                             }
                         }
 
+                        finalTokens = tokensToRecord;
                         _dbContext.UsageLogs.Add(new UsageLog
                         {
                             UserId = userId,
@@ -213,11 +231,11 @@ public class AssistantController : ControllerBase
 
                 await Response.WriteAsync(line + "\n\n", clientDisconnectToken);
                 await Response.Body.FlushAsync(clientDisconnectToken);
-
             }
         }
         catch (BrokenCircuitException ex)
         {
+            runOutcome = "CircuitBreakerOpen";
             _logger.LogWarning(ex, "Circuit breaker is OPEN during agent run streaming.");
             var errPayload = JsonSerializer.Serialize(new
             {
@@ -231,10 +249,12 @@ public class AssistantController : ControllerBase
         }
         catch (OperationCanceledException)
         {
+            runOutcome = "ClientCancelled";
             _logger.LogInformation("Client closed connection mid-run for thread {ThreadId}.", threadId);
         }
         catch (Exception ex)
         {
+            runOutcome = "Failed";
             _logger.LogError(ex, "Streaming error proxying agent run.");
             var errPayload = JsonSerializer.Serialize(new
             {
@@ -246,7 +266,18 @@ public class AssistantController : ControllerBase
             await Response.WriteAsync($"data: {errPayload}\n\n", clientDisconnectToken);
             await Response.Body.FlushAsync(clientDisconnectToken);
         }
+        finally
+        {
+            stopwatch.Stop();
+            // Week 8 Part C: Log one summary line per agent run
+            // Fields: correlation id, user id, route, steps, tokens, latency, outcome (no secrets/PII)
+            _logger.LogInformation(
+                "[AGENT_RUN_SUMMARY] CorrelationId: {CorrelationId} | UserId: {UserId} | ThreadId: {ThreadId} | Steps: {Steps} | Tokens: {Tokens} | LatencyMs: {LatencyMs} | Outcome: {Outcome}",
+                correlationId, userId, threadId, totalStepCount, finalTokens, stopwatch.ElapsedMilliseconds, runOutcome
+            );
+        }
     }
+
 
     /// <summary>
     /// POST: api/assistant/agent/runs/{threadId}/resume

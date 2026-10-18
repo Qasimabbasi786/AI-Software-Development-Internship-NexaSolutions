@@ -161,7 +161,32 @@ static Polly.IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy() =>
             durationOfBreak: TimeSpan.FromSeconds(30)
         );
 
+// 8. Register Health Checks (Database + AI Service)
+builder.Services.AddHttpClient("HealthCheckClient", client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(3);
+});
+builder.Services.AddScoped<DatabaseHealthCheck>();
+builder.Services.AddScoped<AiServiceHealthCheck>();
+
+builder.Services.AddHealthChecks()
+    .AddCheck<DatabaseHealthCheck>("database")
+    .AddCheck<AiServiceHealthCheck>("ai-service");
+
+
 var app = builder.Build();
+
+// Correlation ID Middleware: reads or generates X-Correlation-Id, adds to response and logging scope
+app.Use(async (ctx, next) =>
+{
+    var id = ctx.Request.Headers["X-Correlation-Id"].FirstOrDefault() 
+             ?? Guid.NewGuid().ToString("N");
+    ctx.Response.Headers["X-Correlation-Id"] = id;
+    using (app.Logger.BeginScope(new Dictionary<string, object> { ["CorrelationId"] = id }))
+    {
+        await next();
+    }
+});
 
 // Automatically ensure PostgreSQL database and tables are created
 using (var scope = app.Services.CreateScope())
@@ -189,8 +214,16 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseRateLimiter();
 
+// Map Health Endpoints: /health/live (process only) and /health/ready (dependencies too)
+app.MapHealthChecks("/health/live", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    Predicate = _ => false // Process only: returns 200 OK if Kestrel is running
+});
+app.MapHealthChecks("/health/ready"); // Includes database and ai-service checks
+
 app.MapControllers();
 
 app.Run();
+
 
 public partial class Program { }

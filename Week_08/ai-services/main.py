@@ -14,7 +14,9 @@ import os
 import sys
 import json
 import asyncio
+import uuid
 from pathlib import Path
+
 from typing import Optional, Dict, Any, List, Generator, AsyncGenerator
 from dotenv import load_dotenv
 
@@ -59,6 +61,45 @@ app = FastAPI(
     version="1.0.0"
 )
 
+import logging
+
+# Configure structured logging with correlation id support
+class CorrelationIdFilter(logging.Filter):
+    def __init__(self):
+        super().__init__()
+        self.correlation_id = "system"
+
+    def filter(self, record):
+        record.correlation_id = getattr(record, "correlation_id", correlation_id_var.get())
+        return True
+
+import contextvars
+correlation_id_var = contextvars.ContextVar("correlation_id", default="system")
+
+logging_handler = logging.StreamHandler(sys.stdout)
+logging_formatter = logging.Formatter(
+    '{"timestamp": "%(asctime)s", "level": "%(levelname)s", "correlation_id": "%(correlation_id)s", "logger": "%(name)s", "message": "%(message)s"}'
+)
+logging_handler.setFormatter(logging_formatter)
+logging_handler.addFilter(CorrelationIdFilter())
+
+logger = logging.getLogger("ai_service")
+logger.setLevel(logging.INFO)
+logger.addHandler(logging_handler)
+logger.propagate = False
+
+# Correlation ID middleware for FastAPI
+@app.middleware("http")
+async def correlation_id_middleware(request: Request, call_next):
+    cid = request.headers.get("X-Correlation-Id") or f"cid_{uuid.uuid4().hex[:12]}"
+    token = correlation_id_var.set(cid)
+    try:
+        response = await call_next(request)
+        response.headers["X-Correlation-Id"] = cid
+        return response
+    finally:
+        correlation_id_var.reset(token)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -68,6 +109,7 @@ app.add_middleware(
 )
 
 DOTNET_API_URL = os.getenv("DOTNET_API_URL", "http://localhost:5000")
+
 
 # ----------------------------------------------------------------------
 # 1. Pydantic Request & Response Schemas
@@ -94,6 +136,9 @@ class HealthCheckResponse(BaseModel):
     framework: str = "LangChain LCEL & FastAPI"
     provider: str = "Google Gemini"
     version: str = "1.0.0"
+    vector_store_reachable: bool = True
+    details: Optional[Dict[str, Any]] = None
+
 
 # ----------------------------------------------------------------------
 # 2. Knowledge Base Documents & Recursive Splitting
@@ -253,7 +298,31 @@ conversational_rag = RunnableWithMessageHistory(
 # ----------------------------------------------------------------------
 @app.get("/health", response_model=HealthCheckResponse, tags=["Diagnostics"])
 def health():
-    return HealthCheckResponse()
+    """
+    Week 8 Part C: Reports liveness/readiness, verifying if Chroma vector store is reachable.
+    """
+    vector_reachable = False
+    doc_count = 0
+    try:
+        # Check if vector store is initialized and reachable
+        if vector_store is not None:
+            # Query collection count or test retrieval
+            collection = getattr(vector_store, "_collection", None)
+            if collection:
+                doc_count = collection.count()
+                vector_reachable = True
+            else:
+                vector_reachable = True
+    except Exception as ex:
+        vector_reachable = False
+        doc_count = 0
+
+    return HealthCheckResponse(
+        status="ok" if vector_reachable else "degraded",
+        vector_store_reachable=vector_reachable,
+        details={"indexed_documents": doc_count, "framework": "ChromaDB"}
+    )
+
 
 @app.post("/ask", response_model=AskResponse, tags=["Assistant"])
 def ask(req: AskRequest):
@@ -521,10 +590,14 @@ async def run_agent_stream(
                                 yield f"data: {json.dumps({'event': 'step', 'kind': 'tool_result', 'name': getattr(msg, 'name', 'tool'), 'summary': str(msg.content)[:120]})}\n\n"
                         elif node_name == "agent":
                             for msg in node_output.get("messages", []):
-                                tool_calls = getattr(msg, "tool_calls", [])
-                                if tool_calls:
-                                    for tc in tool_calls:
-                                        yield f"data: {json.dumps({'event': 'step', 'kind': 'tool_call', 'name': tc['name'], 'summary': f'Calling {tc[\"name\"]} with {tc[\"args\"]}'})}\n\n"
+                                tool_calls = getattr(msg, "tool_calls", []) or []
+                                for tc in tool_calls:
+                                    tc_name = tc.get("name", "tool")
+                                    tc_args = tc.get("args", {})
+                                    call_summary = f"Calling {tc_name} with {tc_args}"
+                                    yield f"data: {json.dumps({'event': 'step', 'kind': 'tool_call', 'name': tc_name, 'summary': call_summary})}\n\n"
+
+
 
             # Final state check
             current_state = agent_graph.get_state(config)
@@ -560,11 +633,21 @@ async def run_agent_stream(
 
             yield f"data: {json.dumps({'event': 'final', 'answer': str(final_content), 'sources': ['Library Catalog'], 'tokens': 350, 'cached': False})}\n\n"
 
+            # Week 8 Part C: Structured Log line in FastAPI
+            cid = request.headers.get("X-Correlation-Id", "system")
+            logger.info(
+                f"[AGENT_RUN_FINISHED] correlation_id={cid} user_id={payload.user_id} thread_id={payload.thread_id} route={route} outcome=Completed"
+            )
 
         except Exception as e:
+            cid = request.headers.get("X-Correlation-Id", "system")
+            logger.error(
+                f"[AGENT_RUN_FAILED] correlation_id={cid} user_id={payload.user_id} thread_id={payload.thread_id} error={str(e)}"
+            )
             yield f"data: {json.dumps({'event': 'error', 'code': 500, 'message': str(e), 'retryable': False})}\n\n"
         finally:
             ACTIVE_RUN_CANCELLATIONS.pop(payload.thread_id, None)
+
 
     return StreamingResponse(
         event_generator(),
