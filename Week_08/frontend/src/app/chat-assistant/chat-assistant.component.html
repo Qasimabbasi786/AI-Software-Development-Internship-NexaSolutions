@@ -1,0 +1,100 @@
+<!-- Floating Trigger Button -->
+<button class="chat-toggle-btn" (click)="toggleChat()" [attr.aria-label]="isOpen ? 'Close chat' : 'Open AI Assistant'">
+  <span *ngIf="!isOpen">🤖 Library Agent</span>
+  <span *ngIf="isOpen">✕ Close</span>
+</button>
+
+<!-- Chat Window Modal / Drawer -->
+<div class="chat-drawer" *ngIf="isOpen">
+  <!-- Header -->
+  <div class="chat-header">
+    <div class="header-info">
+      <div class="status-indicator"></div>
+      <div>
+        <h3>Library AI Assistant</h3>
+        <span class="subtitle">LangGraph Agent • HITL Approval • SSE Timeline</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="action-btn" (click)="resetChat()" title="Reset session & agent thread">🔄 New Session</button>
+      <button class="action-btn close-btn" (click)="toggleChat()" title="Close chat">✕</button>
+    </div>
+  </div>
+
+  <!-- Messages Scroll Area -->
+  <div class="chat-messages" #scrollContainer>
+    <div *ngFor="let msg of messages" [ngClass]="['message-bubble', msg.sender]">
+      <div class="avatar">
+        {{ msg.sender === 'user' ? '👤' : '🤖' }}
+      </div>
+      <div class="bubble-content">
+        <div class="sender-name">{{ msg.sender === 'user' ? 'You' : 'Library Agent' }}</div>
+
+        <!-- Execution Timeline for Agent Thought & Tool Steps -->
+        <div *ngIf="msg.steps && msg.steps.length > 0" class="agent-timeline">
+          <div class="timeline-title">⚡ Execution Trace</div>
+          <div *ngFor="let step of msg.steps" class="timeline-item" [ngClass]="step.kind">
+            <span class="step-badge">{{ step.kind === 'tool_call' ? '🔧 Call' : (step.kind === 'tool_result' ? '📋 Result' : '💡 Agent') }}</span>
+            <span class="step-name">{{ step.name }}</span>
+            <span class="step-summary">{{ step.summary }}</span>
+          </div>
+        </div>
+
+        <!-- Interactive Human Approval Card -->
+        <div *ngIf="msg.approvalRequest" class="approval-card">
+          <div class="approval-header">
+            <span class="approval-icon">⚠️</span>
+            <strong>Confirmation Required</strong>
+          </div>
+          <p class="approval-message">{{ msg.approvalRequest.message }}</p>
+          <div class="approval-actions">
+            <button 
+              type="button" 
+              class="btn-approve" 
+              [disabled]="isSubmittingApproval" 
+              (click)="handleApproval(msg, true)">
+              {{ isSubmittingApproval ? 'Processing...' : '✓ Approve Action' }}
+            </button>
+            <button 
+              type="button" 
+              class="btn-reject" 
+              [disabled]="isSubmittingApproval" 
+              (click)="handleApproval(msg, false)">
+              ✕ Reject
+            </button>
+          </div>
+        </div>
+
+        <!-- Main Answer Bubble -->
+        <div class="message-text" *ngIf="msg.text">
+          {{ msg.text }}
+          <span *ngIf="msg.isStreaming" class="streaming-cursor">▋</span>
+        </div>
+        <div class="timestamp">{{ msg.timestamp | date:'shortTime' }}</div>
+      </div>
+    </div>
+
+    <!-- Error banner -->
+    <div *ngIf="errorMessage" class="error-banner">
+      {{ errorMessage }}
+    </div>
+  </div>
+
+  <!-- Input Form -->
+  <form class="chat-input-form" (ngSubmit)="sendMessage()">
+    <input
+      type="text"
+      [(ngModel)]="userInput"
+      name="chatInput"
+      placeholder="e.g. Find and reserve Dune, or check availability..."
+      [disabled]="isLoading"
+      autocomplete="off"
+    />
+    <button *ngIf="!isLoading" type="submit" [disabled]="!userInput.trim()" class="send-btn">
+      Send
+    </button>
+    <button *ngIf="isLoading" type="button" (click)="cancelStreaming()" class="cancel-btn" title="Cancel streaming">
+      ⏹ Stop
+    </button>
+  </form>
+</div>
