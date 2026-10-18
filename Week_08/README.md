@@ -32,10 +32,12 @@
 ```mermaid
 flowchart TB
     subgraph ClientTier ["Browser / Angular 18 Client (Untrusted Public Edge)"]
-        UI["Angular SPA\n- Correlation Interceptor\n- Approval Action Cards\n- JWT Bearer Header"]
+        UI["Angular SPA\n- Correlation Interceptor (X-Correlation-Id)\n- Approval Action Cards (HITL)\n- JWT Bearer Header"]
     end
 
-    subgraph TrustBoundary1 ["Trust Boundary 1: TLS / CORS / JWT Gateway"]
+    subgraph TrustBoundary1 ["Trust Boundary 1: Public Internet / Edge Gate (TLS + CORS + JWT)"]
+        direction TB
+        TB1_Desc["Edge Security:\n- HTTPS TLS 1.3\n- Strict Origin-Locked CORS\n- Cryptographic JWT Bearer Auth\n- IP Login Rate Limiter & Lockout"]
     end
 
     subgraph ApiTier [".NET 8 Web API (Application Gateway & Resource Server)"]
@@ -43,27 +45,51 @@ flowchart TB
         SQL[(SQL Server 2022\nUsers, Books, Checkpoints,\nReservations, Audit Logs)]
     end
 
-    subgraph TrustBoundary2 ["Trust Boundary 2: Internal Microservice Network (Service-Key Protected)"]
+    subgraph TrustBoundary2 ["Trust Boundary 2: Internal Microservice Network (Service-Key + Isolated Docker Network)"]
+        direction TB
+        TB2_Desc["Internal Security:\n- Isolated Container Bridge Network\n- Static Pre-Shared Service Key (X-Service-Key)\n- Correlation Header Propagation\n- Ephemeral User Identity ContextVar"]
     end
 
     subgraph AiTier ["FastAPI + LangGraph Orchestration Service"]
         FastAPI["FastAPI AI Service\n- Service Key Auth & X-Correlation-Id\n- TTL & Versioned Answer Cache\n- Context Manager / Token Trimmer"]
-        LangGraph["LangGraph StateGraph\n- Routing Node\n- HITL Interrupt Checkpointer\n- Tool Invocation Engine"]
+        LangGraph["LangGraph StateGraph\n- Intent Routing Node\n- HITL Interrupt Checkpointer\n- Tool Invocation Engine"]
         Chroma[(ChromaDB Vector Store\nPersistent Indexed Embeddings)]
+        SQLite[(SQLite Checkpoint Store\nSqliteSaver: /data/checkpoints)]
+    end
+
+    subgraph TrustBoundary3 ["Trust Boundary 3: External Vendor Cloud Egress (HTTPS + API Keys)"]
+        direction TB
+        TB3_Desc["External Cloud Boundary:\n- Outbound TLS 1.3 HTTPS\n- Environment Secret Injection (Never logged)\n- Strict 10s Outbound Timeout & Circuit Breaker"]
     end
 
     subgraph ExternalTier ["External AI Model Providers"]
         LLM["Google Gemini / OpenAI / Anthropic\n(LLM & Embeddings API)"]
     end
 
-    UI -->|HTTPS / X-Correlation-Id + JWT| DotnetAPI
-    DotnetAPI -->|EF Core / Local SQL Auth| SQL
-    DotnetAPI -->|HTTP REST / Service-Key + X-Correlation-Id| FastAPI
+    UI -->|1. HTTPS / X-Correlation-Id + Bearer JWT| TrustBoundary1
+    TrustBoundary1 --> DotnetAPI
+    DotnetAPI -->|EF Core / TDS Encrypted Protocol| SQL
+    DotnetAPI -->|2. HTTP REST / X-Service-Key + X-Correlation-Id| TrustBoundary2
+    TrustBoundary2 --> FastAPI
     FastAPI --> LangGraph
-    LangGraph -->|Read Queries| Chroma
-    LangGraph -->|Tool Callback with User-Context| DotnetAPI
-    LangGraph -->|Inference Call + Timeout| LLM
+    LangGraph -->|Read Queries / Cosine Search| Chroma
+    LangGraph -->|Durable State / WAL File I/O| SQLite
+    LangGraph -->|3. Tool Callback / X-Service-Key + Ephemeral User Token| DotnetAPI
+    LangGraph -->|4. HTTPS Outbound / API Key in Header + 10s Timeout| TrustBoundary3
+    TrustBoundary3 --> LLM
 ```
+
+### Detailed Trust Boundaries & Authentication Matrix
+
+| Hop / Boundary | Source → Destination | Protocol & Transport | Authentication & Authorization | Enforcing Control |
+| :--- | :--- | :--- | :--- | :--- |
+| **Trust Boundary 1 (Public Edge)** | Angular Client → .NET Web API | HTTPS / TLS 1.3 | Signed JWT (`Bearer <token>`), role claims | ASP.NET Core `[Authorize]`, JwtBearer handler, strict CORS policy |
+| **Data Store Boundary** | .NET Web API → SQL Server 2022 | TDS Protocol (Port 1433) | SQL Server `sa` credentials via environment variables | Entity Framework Core parameterization, ConnectionStrings in env |
+| **Trust Boundary 2 (Internal Service)** | .NET Web API → FastAPI AI Service | HTTP/REST (Port 8000) over Docker network | Pre-shared internal secret (`X-Service-Key`) | FastAPI `Header(alias="X-Service-Key")` dependency guard |
+| **Tool Execution Callback** | LangGraph Tool → .NET Web API | HTTP/REST (Port 8080) over Docker network | `X-Service-Key` + forwarded user JWT context | ASP.NET Core internal policy validation + User ClaimsPrincipal |
+| **Vector & State Persistence** | LangGraph → ChromaDB / SQLite | Local Process File I/O | Non-root container filesystem permissions (`USER app`) | Linux file mode permissions on mounted volume (`/data`) |
+| **Trust Boundary 3 (External Egress)** | FastAPI → Google Gemini / OpenAI | HTTPS / TLS 1.3 | Provider API Key in HTTP Header | Injected via environment variables; excluded from logs and state |
+
 
 ---
 
