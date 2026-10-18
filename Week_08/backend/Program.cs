@@ -68,10 +68,12 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-// 3b. Configure Per-User Rate Limiting (AddRateLimiter)
+// 3b. Configure Rate Limiting Policies (Agent Runs & Login Brute-force protection)
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    // Policy 1: Per-User Agent Runs (15 requests/min)
     options.AddPolicy("PerUserAgentPolicy", httpContext =>
     {
         var userId = httpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
@@ -88,7 +90,22 @@ builder.Services.AddRateLimiter(options =>
                 QueueLimit = 0
             });
     });
+
+    // Policy 2: Login Brute-Force Rate Limiting (5 attempts per minute per IP)
+    options.AddPolicy("LoginRateLimitPolicy", httpContext =>
+    {
+        var ip = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown_ip";
+        return System.Threading.RateLimiting.RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: ip,
+            factory: key => new System.Threading.RateLimiting.FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            });
+    });
 });
+
 
 // 4. Configure Swagger with JWT Bearer definition
 builder.Services.AddEndpointsApiExplorer();
@@ -195,8 +212,23 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.EnsureCreated();
 }
 
-// Enable CORS Middleware
+// Week 8 Part D: Security Headers & HSTS Middleware
+app.Use(async (ctx, next) =>
+{
+    ctx.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    ctx.Response.Headers["X-Frame-Options"] = "DENY";
+    ctx.Response.Headers["X-XSS-Protection"] = "1; mode=block";
+    ctx.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+    if (ctx.Request.IsHttps)
+    {
+        ctx.Response.Headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains";
+    }
+    await next();
+});
+
+// Enable CORS Middleware (Strict origin only: http://localhost:4200, https://localhost:4200)
 app.UseCors("AllowAngularApp");
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

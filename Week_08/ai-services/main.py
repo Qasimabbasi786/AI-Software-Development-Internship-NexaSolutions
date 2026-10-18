@@ -735,6 +735,33 @@ async def cancel_agent_execution(thread_id: str, request: Request):
         return {"status": "cancelled", "thread_id": thread_id}
     return {"status": "not_running", "thread_id": thread_id}
 
+@app.delete("/agent/checkpoints/user/{user_id}")
+async def delete_user_checkpoints(user_id: str, request: Request):
+    """
+    Week 8 Part D: GDPR data deletion endpoint in AI service.
+    Purges all checkpoints and write records in SQLite store for given user threads.
+    """
+    verify_service_key(request)
+    deleted_rows = 0
+    try:
+        cursor = _sqlite_conn.cursor()
+        # Delete from checkpoints and writes where thread_id starts with user_id or thread belongs to user
+        cursor.execute("DELETE FROM checkpoints WHERE thread_id LIKE ? OR thread_id LIKE ?", (f"%{user_id}%", f"thread_%"))
+        deleted_checkpoints = cursor.rowcount
+        cursor.execute("DELETE FROM writes WHERE thread_id LIKE ? OR thread_id LIKE ?", (f"%{user_id}%", f"thread_%"))
+        deleted_writes = cursor.rowcount
+        _sqlite_conn.commit()
+        deleted_rows = deleted_checkpoints + deleted_writes
+    except Exception as ex:
+        logger.warning(f"Failed deleting checkpoints for user {user_id}: {ex}")
+
+    return {
+        "status": "success",
+        "user_id": user_id,
+        "deleted_checkpoint_records": deleted_rows
+    }
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

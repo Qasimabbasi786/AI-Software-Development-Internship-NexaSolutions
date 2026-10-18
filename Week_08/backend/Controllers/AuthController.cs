@@ -81,11 +81,14 @@ public class AuthController : ControllerBase
     /// <summary>
     /// POST: api/auth/login
     /// Validates user credentials against stored password hash and issues a signed JWT token.
+    /// Rate limited to prevent brute force credential attacks.
     /// </summary>
     [HttpPost("login")]
+    [Microsoft.AspNetCore.RateLimiting.EnableRateLimiting("LoginRateLimitPolicy")]
     public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.Username) || string.IsNullOrWhiteSpace(dto.Password))
+
         {
             return BadRequest(new { message = "Username and password are required." });
         }
