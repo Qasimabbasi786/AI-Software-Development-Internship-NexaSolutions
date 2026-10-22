@@ -33,7 +33,7 @@ def get_router_model(temperature: float = 0.0, **kwargs: Any) -> BaseChatModel:
     Week 8 Part B: Returns a lightweight, high-speed, cost-effective model specifically
     for intent classification and query routing, saving tokens and latency.
     """
-    router_model_name = os.getenv("ROUTER_MODEL", "gemini-1.5-flash")
+    router_model_name = os.getenv("ROUTER_MODEL") or os.getenv("GEMINI_MODEL") or "gemini-2.5-flash-lite"
     return get_chat_model(model_name=router_model_name, temperature=temperature, **kwargs)
 
 
