@@ -10,22 +10,21 @@
 [![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110%2B-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![LangGraph](https://img.shields.io/badge/Orchestrator-LangGraph-2E7D32?logo=diagram-project&logoColor=white)](https://langchain-ai.github.io/langgraph/)
-[![SQLite Checkpointer](https://img.shields.io/badge/Checkpointer-SqliteSaver-003B57?logo=sqlite&logoColor=white)](https://www.sqlite.org/)
-[![Google Gemini](https://img.shields.io/badge/AI_Engine-Google_Gemini-4285F4?logo=google&logoColor=white)](https://ai.google.dev/)
-[![Milestone: Week 7 Done](https://img.shields.io/badge/Progress-Week_7_Completed_%E2%9C%85-success)](https://github.com/)
-[![Resilience: Polly](https://img.shields.io/badge/Resilience-Polly_C%23-4CAF50)](https://github.com/App-vNext/Polly)
+[![Docker](https://img.shields.io/badge/Packaging-Docker_Compose-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![Release: v1.0.0](https://img.shields.io/badge/Release-v1.0.0_Ready-green)](./Week_08/CHANGELOG.md)
+[![Status: Complete](https://img.shields.io/badge/Milestone-Week_8_Capstone_Done_%E2%9C%85-success)](./Week_08/README.md)
 
 ---
 
-Welcome to the central repository for the **Nexa Solutions AI Software Development Internship** in technical partnership with **OriginSoft Consultancy**. This repository houses hands-on solutions, production-grade architectures, and incremental milestones demonstrating full-stack engineering proficiency spanning **C# / .NET**, **Angular & TypeScript**, **PostgreSQL / EF Core**, and **Python-driven Autonomous AI Agents**.
+Welcome to the central engineering repository for the **Nexa Solutions AI Software Development Internship** in technical partnership with **OriginSoft Consultancy**. This repository houses hands-on solutions, production-grade architectures, and incremental milestones demonstrating full-stack engineering proficiency spanning **C# / .NET 8**, **Angular 18 & TypeScript**, **PostgreSQL / EF Core**, and **Python-driven Autonomous AI Agents with LangGraph**.
 
 ---
 
 ## 👨‍💻 Engineer Information
 - **Intern Name:** Muhammad Qasim
-- **Track:** AI & Full-Stack Software Engineering
+- **Track:** AI & Full-Stack Software Engineering (.NET + Angular + Python AI)
 - **Organization:** Nexa Solutions (with OriginSoft Consultancy)
-- **Repository Structure:** Modularized Week-by-Week Enterprise Milestones
+- **Repository Structure:** Modularized Week-by-Week Enterprise Milestones (Weeks 1 through 8)
 
 ---
 
@@ -40,10 +39,10 @@ Welcome to the central repository for the **Nexa Solutions AI Software Developme
 │ • .NET 8 / 9 SDK    │ • Angular 18/19   │ • PostgreSQL │ • Python 3.12+│
 │ • C# 12 (Modern)    │ • TypeScript 5+   │ • SQLiteSaver│ • LangGraph   │
 │ • ASP.NET Core API  │ • Reactive Forms  │ • EF Core 8  │ • StateGraph  │
-│ • Polly Resilience  │ • RxJS Observables│ • Migrations │ • HITL Pauses │
-│ • Claims-based Auth │ • Native Fetch    │ • Idempotency│ • Pydantic    │
-│ • AddRateLimiter    │   ReadableStream  │   Keys       │ • MCP & SK    │
-│ • LINQ & Generics   │ • CSS Modern UI   │ • ContextVars│ • Gemini 2.5  │
+│ • Polly Resilience  │ • Signals Store   │ • Migrations │ • HITL Pauses │
+│ • Claims-based Auth │ • RxJS Observables│ • Idempotency│ • Pydantic    │
+│ • FixedWindow Limit │ • Native SSE Fetch│   Keys       │ • TTLCache    │
+│ • LINQ & Generics   │ • Tailwind/Nginx  │ • ContextVars│ • Gemini 2.5  │
 └─────────────────────┴───────────────────┴──────────────┴───────────────┘
 ```
 
@@ -60,6 +59,7 @@ Welcome to the central repository for the **Nexa Solutions AI Software Developme
 | **[Week 05](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_05)** | **Embeddings, Vector Databases & Manual RAG Pipeline** | `Completed` ✅ | • Part A: Vector embeddings fundamentals, Cosine Similarity & top-$k$ semantic search.<br>• Part B: Local ChromaDB vector storage, collections & metadata filtering.<br>• Part C: Complete 8-stage manual RAG pipeline (chunking, embedding, storage, retrieval, context, generation, attribution).<br>• Part D: RAG quality evaluation, hallucination reduction & chunk trade-offs.<br>• Part E: FastAPI `/ask` endpoint wiring manual RAG pipeline.<br>• Part F: Safe Git commit undoing (`git revert`) on protected branches.<br>• **Capstone:** Library Knowledge Assistant with real .NET catalog corpus. |
 | **[Week 06](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_06)** | **LangChain LCEL, Tools, Polly & End-to-End Streaming** | `Completed` ✅ | • Part A: Declarative LCEL RAG chain (`\|`), `RunnablePassthrough` & input guards.<br>• Part B: `RecursiveCharacterTextSplitter` & `MultiQueryRetriever` with Gemini embeddings.<br>• Part C: Pydantic structured output (`BookAnswer`) & session memory (`RunnableWithMessageHistory`).<br>• Part D: Dynamic tool calling (`@tool check_book_availability`) with .NET availability endpoint.<br>• Part E: Production Polly resilience (retry, timeout, circuit breaker) in ASP.NET Core 8.<br>• Part F: Tri-layer Server-Sent Events (SSE) streaming architecture blueprint.<br>• Part G: Cleaning Git history with interactive rebase & `--force-with-lease`.<br>• **Capstone:** Fully Wired Library AI Assistant (.NET Proxy + FastAPI + Angular Streaming Drawer). |
 | **[Week 07](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_07)** | **Secure LangGraph Agents, HITL, Persistence & CI** | `Completed` ✅ | • Part A: LangGraph core state machine, cyclic loops, and `MAX_STEPS = 6` limits.<br>• Part B: Secure tool design (`ReserveArgs(gt=0)`), ephemeral token isolation via `ContextVar`, and idempotency.<br>• Part C: Intent router (`RouteClassification`), dynamic 409 conflict re-planning, and typed error backoffs.<br>• Part D: `SqliteSaver` checkpointer, `interrupt()` approval gates, and GDPR "Forget Preferences" path.<br>• Part E: Multi-agent supervisor coordinating specialized Catalog and Circulation agents.<br>• Part F: 7-vector adversarial security red-team harness with untrusted XML wrapper tags.<br>• Part G: Deterministic testing (15 pytest + 9 xUnit tests) and 10-scenario trajectory evaluation.<br>• Part H: Full-stack integration with ASP.NET Core rate limiting and Angular approval cards.<br>• Part I & J: Ecosystem analysis (MCP, Semantic Kernel) and 3-job GitHub Actions CI with `git bisect`.<br>• **Capstone:** Full-Stack Library Agent: Find, Approve, Reserve (.NET + Angular + LangGraph). |
+| **[Week 08](file:///d:/Courses%20and%20Internship/Internship/Completed/Internship-by-azeem/Week_wise_sol/All%20Week%20Tasks%20Sol/Week_08)** | **Capstone Production Hardening, Packaging & Release** | `Completed` ✅ | • Part A: Backlog triage, architecture diagrams, 4 ADRs, pre-mortem risk analysis.<br>• Part B: Incremental vector indexing, safe read-only answer cache (`TTLCache`), token budgeting.<br>• Part C: Distributed correlation IDs (`X-Correlation-Id`), liveness/readiness health probes, Polly retries.<br>• Part D: 0 CVE dependency scans, 0 secrets in history, locked CORS, rate limits, GDPR data deletion.<br>• Part E: Multi-stage Dockerfiles (`.NET`, `Python`, `Angular/Nginx`), `docker-compose.yml`, seeder.<br>• Part F: Formal release criteria, 20-scenario eval suite (95% pass rate), `CHANGELOG.md` v1.0.0.<br>• Part G: Full documentation suite (`architecture.md`, `runbook.md`, `user-guide.md`, reflections).<br>• Part H: 24-minute incident response drill, blameless postmortem, 3 substantive PR reviews.<br>• Part I: Curriculum gap map, 1–4 competency self-assessment, 90-day learning roadmap.<br>• **Capstone:** Enterprise Multi-Container AI Library System (Release v1.0.0). |
 
 ---
 
@@ -80,91 +80,71 @@ All Week Tasks Sol/
 ├── Week_04/                                      # WEEK 4: JWT AUTH & FASTAPI AI MICROSERVICE
 ├── Week_05/                                      # WEEK 5: EMBEDDINGS, VECTOR DBS & MANUAL RAG
 ├── Week_06/                                      # WEEK 6: LANGCHAIN LCEL, TOOLS, POLLY & STREAMING
+├── Week_07/                                      # WEEK 7: SECURE LANGGRAPH AGENTS, HITL, PERSISTENCE & CI
 │
-└── Week_07/                                      # WEEK 7: SECURE LANGGRAPH AGENTS, HITL, PERSISTENCE & CI
-    ├── README.md                                 # Week 7 Architecture & Executive Blueprint
-    ├── requirements.txt                          # Python dependencies (langgraph, langchain-core, etc.)
-    ├── docs/                                     # Technical reports & write-ups
-    │   ├── week7-agent-loop-notes.md             # Agent loop termination & error recovery notes
-    │   ├── week7-tool-risk-table.md              # Tool risk classification & justification table
-    │   ├── week7-red-team-report.md              # 7-attack red-team findings & residual risk report
-    │   ├── week7-eval-report.md                  # 10-scenario x 3-run evaluation matrix & LangSmith traces
-    │   ├── week7-single-vs-multi-agent.md        # Single vs. multi-agent comparative analysis (Stretch)
-    │   ├── week7-mcp-vs-langchain-tools.md       # MCP vs. LangChain tools ecosystem analysis (Stretch)
-    │   └── week7-semantic-kernel-comparison.md   # Semantic Kernel (.NET) vs. LangGraph comparison (Stretch)
-    ├── Week_07_PartA_AgentFundamentals/          # LangGraph core: state, nodes, edges, cycle limits
-    ├── Week_07_PartB_SecureTools/                # Pydantic schemas, write tools, JWT via config, idempotency
-    ├── Week_07_PartC_RoutingPlanning/            # Intent routing, plan-then-execute, replanning on conflict
-    ├── Week_07_PartD_PersistenceHITL/            # SQLiteSaver checkpointing, interrupt/resume, memory
-    ├── Week_07_PartE_MultiAgent/                 # Multi-agent supervisor with catalog & circulation specialists
-    ├── Week_07_PartF_SecurityRedTeam/            # 7 security attack tests, untrusted document wrapping
-    ├── Week_07_PartG_TestingEval/                # Pytest, xUnit tests, 10-scenario evaluation suite
-    ├── Week_07_PartH_FullStackIntegration/       # .NET Agent API, SSE events, Angular approval timeline
-    ├── Week_07_PartI_Ecosystem/                  # MCP, Semantic Kernel, and local model analysis
-    ├── Week_07_PartJ_CI_GitBisect/               # CI configuration verification, git bisect logs
-    └── Week_07_Final_Project/                    # Capstone: Full-Stack Library Agent (Find, Approve, Reserve)
-        ├── backend/                              # ASP.NET Core 8 Web API & Reservations Gateway (:5000)
-        ├── frontend/                             # Angular 18 Client with Interactive Approval Cards (:4200)
-        └── ai-services/                          # FastAPI + LangGraph Agent with SQLite Checkpointer (:8000)
+└── Week_08/                                      # WEEK 8: CAPSTONE PRODUCTION HARDENING & RELEASE v1.0.0
+    ├── README.md                                 # Week 8 Production Guide & Quick Start
+    ├── CHANGELOG.md                              # SemVer v1.0.0 Keep a Changelog Release Notes
+    ├── docker-compose.yml                        # Production Multi-Service Container Mesh
+    ├── .env.example                              # Complete Environment Configuration Template
+    ├── backend/                                  # .NET 8 Web API (Multi-stage Dockerfile, Seeder)
+    ├── ai-services/                              # FastAPI Microservice (LangGraph, Chroma, Safe Cache)
+    ├── frontend/                                 # Angular 18 Client (Nginx Alpine SPA Server)
+    └── docs/                                     # Complete Capstone Documentation Suite (14 Documents)
+        ├── README.md                             # Documentation index & reading guide
+        ├── architecture.md                       # Component topology, trust boundaries, sequence diagrams
+        ├── runbook.md                            # Production operations, triage, secret rotation
+        ├── user-guide.md                         # Natural language assistant, HITL approvals, privacy
+        ├── release-criteria.md                   # Pre-approved hard and soft quality gates
+        ├── week8-evaluation-report.md            # 20-scenario x 3-run evaluation matrix & failure analysis
+        ├── week8-performance-report.md           # Before/after benchmarks, token costs, latency
+        ├── week8-security-review.md              # Dependency scans, gitleaks, CORS, rate limiting
+        ├── week8-trace-example.md                # Distributed trace traversing Angular, .NET & FastAPI
+        ├── postmortem-drill.md                   # 24-minute incident drill blameless postmortem
+        ├── gap-map.md                            # Curriculum gap map & 90-day learning roadmap
+        ├── checklist-verification.md             # Task sheet Definition of Done verification audit
+        ├── reflection-muhammad-qasim.md          # Individual engineering reflection & hardest bug
+        ├── presentation-outline.md               # 8-slide Demo Day presentation script
+        └── adr/                                  # Architecture Decision Records (ADR-001 through 004)
 ```
 
 ---
 
-## ⚡ Quick Execution Guidelines (Week 7 Capstone)
+## ⚡ Quick Start: Clean Machine in 3 Steps (Week 8 Capstone)
 
-### 1. Launching .NET 8 Backend API & Reservations Gateway (Port 5000)
-```powershell
-# Navigate to Week 7 Final Project backend
-cd "Week_07/Week_07_Final_Project/backend"
-
-# Restore & run ASP.NET Core API with Polly Resilience, Rate Limiting & SSE Proxy
-& "D:\Software\dotnet\dotnet.exe" build
-& "D:\Software\dotnet\dotnet.exe" run --urls "http://localhost:5000"
-# Access interactive Swagger UI at http://localhost:5000
-```
-
-### 2. Launching Python FastAPI & LangGraph Agent Service (Port 8000)
-```powershell
-# Navigate to Week 7 Final Project AI Services
-cd "Week_07/Week_07_Final_Project/ai-services"
-
-# Install dependencies and start server
-& "D:\Software\PythonEnvironments\AI_env\Scripts\python.exe" -m pip install -r requirements.txt
-& "D:\Software\PythonEnvironments\AI_env\Scripts\python.exe" main.py
-# Access healthcheck at http://localhost:8000/health
-```
-
-### 3. Launching Angular 18 Frontend Client with Approval Timeline (Port 4200)
+### 1. Configure Environment
 ```bash
-# Navigate to Week 7 Final Project frontend
-cd "Week_07/Week_07_Final_Project/frontend"
-
-# Launch Angular development server
-npm install
-npm start
-# Access interactive web application at http://localhost:4200/
+cd Week_08
+cp .env.example .env
 ```
+*(Provide your `GEMINI_API_KEY`. Database, JWT, and networking settings are pre-configured).*
 
-### 4. Running the Comprehensive Automated Verification Suites
-```powershell
-# 1. Run .NET xUnit Integration Tests (9 tests, in-memory SQLite isolation)
-& "D:\Software\dotnet\dotnet.exe" test "Week_07/Week_07_Final_Project/backend/tests/libraryAPI.Tests.csproj"
-
-# 2. Run Python Deterministic Agent Tests (15 tests, mocked dependencies)
-& "D:\Software\PythonEnvironments\AI_env\Scripts\python.exe" -m pytest "Week_07/Week_07_Final_Project/ai-services/tests"
+### 2. Launch Container Mesh
+```bash
+docker compose up --build
 ```
+*Coordinates PostgreSQL 16 Alpine, FastAPI AI Service, ASP.NET Core 8 Web API, and Angular 18 Nginx SPA with automated schema migrations and startup seeding (admin, demo user, 16 books).*
+
+### 3. Verify Live Endpoints
+- **Angular Web Client:** [http://localhost:4200](http://localhost:4200) (Demo User: `demo_user` / `DemoUser123!`)
+- **ASP.NET Core Web API:** [http://localhost:5000/swagger](http://localhost:5000/swagger)
+- **API Health Probes:** [http://localhost:5000/health/live](http://localhost:5000/health/live) & [http://localhost:5000/health/ready](http://localhost:5000/health/ready)
+- **FastAPI AI Engine:** [http://localhost:8000/health](http://localhost:8000/health) & [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
-## 🛡️ Engineering Values & Code Quality Standards
-- **Clean Architecture:** Strict adherence to separation of concerns (Presentation $\to$ Service $\to$ Repository $\to$ Data Store).
-- **Type Safety & Schema Boundaries:** Nullable reference types enabled across C#, strict TypeScript models, and Pydantic boundary validation (`gt=0`, min length) on all agent tools.
-- **Defense in Depth:** Ambient credentials handled exclusively in transient memory (`ContextVar`), zero credentials written to SQLite checkpoints, and strict JWT claims verification on backend write endpoints.
-- **DevOps Hygiene:** Multi-job CI pipelines enforcing green status checks, branch protection, linear commit histories, and automated `git bisect` root-cause isolation.
+## 🛡️ Engineering Values & Quality Guarantees
+- **Zero Unapproved Writes:** Enforced via LangGraph Human-in-the-Loop interactive approval cards.
+- **Zero Leaked Secrets:** Verified across whole git commit tree with `gitleaks`.
+- **Zero Circular Deadlocks:** Decoupled container startup readiness conditions (`service_healthy`).
+- **High Performance & FinOps:** Content-hash incremental indexing + 0-token safe read-only catalog caching.
+- **Production Observability:** End-to-end distributed tracing via `X-Correlation-Id`.
 
 ---
 
 ## 👤 Author
 
 - **Name:** Muhammad Qasim  
-- **Internship:** AI Software Development Internship (.NET + Angular + AI)
+- **Track:** AI Software Development Internship (.NET + Angular + Python AI)  
+- **Repository:** [AI-Software-Development-Internship-NexaSolutions](https://github.com/Qasimabbasi786/AI-Software-Development-Internship-NexaSolutions)  
+- **Release:** Tagged **`v1.0.0`** on `main`
