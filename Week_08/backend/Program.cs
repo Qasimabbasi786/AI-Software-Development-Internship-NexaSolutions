@@ -205,12 +205,18 @@ app.Use(async (ctx, next) =>
     }
 });
 
-// Automatically ensure PostgreSQL database and tables are created
-using (var scope = app.Services.CreateScope())
+// Automatically ensure database schema and seed data when RUN_MIGRATIONS == "true"
+var runMigrations = Environment.GetEnvironmentVariable("RUN_MIGRATIONS")?.ToLower() ?? "true";
+if (runMigrations == "true" || runMigrations == "1")
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<LibraryDbContext>();
-    dbContext.Database.EnsureCreated();
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<LibraryDbContext>();
+        dbContext.Database.EnsureCreated();
+        DatabaseSeeder.SeedAsync(dbContext).GetAwaiter().GetResult();
+    }
 }
+
 
 // Week 8 Part D: Security Headers & HSTS Middleware
 app.Use(async (ctx, next) =>

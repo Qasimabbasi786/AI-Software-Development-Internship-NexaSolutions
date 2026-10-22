@@ -1,0 +1,142 @@
+# ==============================================================================
+# Week 8 Capstone: Production Multi-Container Orchestration
+# ==============================================================================
+# Services:
+# 1. database (PostgreSQL 16 Alpine / relational catalog & user store)
+# 2. ai-service (FastAPI + LangGraph + Chroma vector store)
+# 3. api (.NET 8 Minimal API + EF Core + Polly Circuit Breaker)
+# 4. web (Angular 18 SPA + Nginx Alpine)
+# ==============================================================================
+
+services:
+  # ----------------------------------------------------------------------------
+  # 1. Database Service (PostgreSQL 16)
+  # ----------------------------------------------------------------------------
+  db:
+    image: postgres:16-alpine
+    container_name: library-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-librarydb_week3}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-private}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - sqldata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-librarydb_week3}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    networks:
+      - library-net
+
+  # ----------------------------------------------------------------------------
+  # 2. Python AI Microservice (FastAPI + LangGraph + Chroma)
+  # ----------------------------------------------------------------------------
+  ai-service:
+    build:
+      context: ./ai-services
+      dockerfile: Dockerfile
+    container_name: library-ai-service
+    restart: unless-stopped
+    environment:
+      SERVICE_KEY: ${SERVICE_KEY:-sec-auth-token-internal-fastapi-comm-week08-secure-2026}
+      DOTNET_API_URL: http://api:8080
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      CHROMA_PERSIST_DIRECTORY: /data/chroma
+      SQLITE_CHECKPOINT_PATH: /data/checkpoints/agent_checkpoints.sqlite
+    volumes:
+      - aidata:/data
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - library-net
+
+  # ----------------------------------------------------------------------------
+  # 3. .NET 8 Backend Web API (Kestrel, non-root)
+  # ----------------------------------------------------------------------------
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: library-api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_HTTP_PORTS: "8080"
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: ${POSTGRES_DB:-librarydb_week3}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-private}
+      Jwt__Key: ${JWT_KEY:-SuperSecretWeek08ProductionHardenedSigningKeyMustBe32CharsLong!}
+      AiService__BaseUrl: http://ai-service:8000
+      FASTAPI_API_URL: http://ai-service:8000
+      SERVICE_KEY: ${SERVICE_KEY:-sec-auth-token-internal-fastapi-comm-week08-secure-2026}
+      RUN_MIGRATIONS: ${RUN_MIGRATIONS:-true}
+    depends_on:
+      db:
+        condition: service_healthy
+      ai-service:
+        condition: service_healthy
+    ports:
+      - "5000:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/live"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - library-net
+
+  # ----------------------------------------------------------------------------
+  # 4. Angular 18 Client (Nginx Alpine SPA Server)
+  # ----------------------------------------------------------------------------
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: library-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "4200:80"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    networks:
+      - library-net
+
+# ------------------------------------------------------------------------------
+# Persistent Named Volumes
+# ------------------------------------------------------------------------------
+volumes:
+  sqldata:
+    name: library_sqldata
+  aidata:
+    name: library_aidata
+
+# ------------------------------------------------------------------------------
+# Bridge Network for Service Mesh
+# ------------------------------------------------------------------------------
+networks:
+  library-net:
+    name: library_network
+    driver: bridge
