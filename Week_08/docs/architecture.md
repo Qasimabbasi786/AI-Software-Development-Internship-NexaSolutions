@@ -52,16 +52,16 @@ graph TB
         end
     end
 
-    Browser -->|HTTP/REST & SSE| SPA
-    SPA -->|REST API & SSE /agent/run| Kestrel
+    Browser -->|"HTTP/REST & SSE"| SPA
+    SPA -->|"REST API & SSE /agent/run"| Kestrel
     Kestrel --> SecHeaders --> AuthMiddle --> RateLimit
-    RateLimit --> EFCore -->|Npgsql| PostgresEngine
-    RateLimit --> PollyResilience -->|HTTP /agent/run (X-Service-Key)| FastAPIApp
+    RateLimit --> EFCore -->|"Npgsql"| PostgresEngine
+    RateLimit --> PollyResilience -->|"HTTP /agent/run (X-Service-Key)"| FastAPIApp
     FastAPIApp --> SafeCache
     FastAPIApp --> RouterNode --> LangGraphEngine
     LangGraphEngine --> Checkpointer
     LangGraphEngine --> ChromaStore
-    LangGraphEngine -.->|Tool: check_availability| Kestrel
+    LangGraphEngine -.->|"Tool: check_availability"| Kestrel
 ```
 
 ---

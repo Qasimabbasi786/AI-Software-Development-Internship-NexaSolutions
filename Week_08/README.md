@@ -47,13 +47,13 @@ flowchart TB
         SQLite[(SQLite Checkpoint Store\n/data/checkpoints volume)]
     end
 
-    UI -->|1. HTTPS / REST & SSE| DotnetAPI
-    DotnetAPI -->|Npgsql / Port 5432| DB
-    DotnetAPI -->|2. HTTP /agent/run (X-Service-Key)| FastAPI
+    UI -->|"1. HTTPS / REST & SSE"| DotnetAPI
+    DotnetAPI -->|"Npgsql / Port 5432"| DB
+    DotnetAPI -->|"2. HTTP /agent/run (X-Service-Key)"| FastAPI
     FastAPI --> LangGraph
-    LangGraph -->|Cosine Similarity| Chroma
-    LangGraph -->|Turn State Snapshots| SQLite
-    LangGraph -.->|3. Tool: check_book_availability| DotnetAPI
+    LangGraph -->|"Cosine Similarity"| Chroma
+    LangGraph -->|"Turn State Snapshots"| SQLite
+    LangGraph -.->|"3. Tool: check_book_availability"| DotnetAPI
 ```
 
 ---
