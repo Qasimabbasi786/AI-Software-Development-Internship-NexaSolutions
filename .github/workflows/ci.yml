@@ -26,13 +26,9 @@ jobs:
         working-directory: Week_07/Week_07_Final_Project/backend
         run: dotnet restore
 
-      - name: Build .NET Backend
-        working-directory: Week_07/Week_07_Final_Project/backend
-        run: dotnet build -c Release --no-restore
-
       - name: Run .NET Integration Tests
         working-directory: Week_07/Week_07_Final_Project/backend
-        run: dotnet test tests/libraryAPI.Tests.csproj -c Release --no-build --verbosity normal
+        run: dotnet test tests/libraryAPI.Tests.csproj -c Release --verbosity normal
 
   angular:
     name: Build Angular Frontend
