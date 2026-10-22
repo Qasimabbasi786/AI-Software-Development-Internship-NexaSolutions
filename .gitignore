@@ -58,9 +58,12 @@ htmlcov/
 *.certificate
 *.sqlite
 *.sqlite3
+*.sqlite-wal
+*.sqlite-shm
 *.db
 agent_checkpoints.sqlite
 eval_checkpoints.sqlite
+eval_checkpoints*.sqlite*
 
 # ------------------------------------------------------------------------------
 # 5. IDE, Editor & OS Specific Files
